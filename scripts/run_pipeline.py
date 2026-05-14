@@ -39,14 +39,13 @@ if __name__ == "__main__":
 
     print("\nPipeline finished successfully.")
 
-    if isinstance(result, dict):
-        print("\nReturned objects:")
+    print("\nReturned object:")
+    print(type(result))
 
-        for key in result.keys():
-            print(f"    {key}")
+    print("\nSamples:")
+    for sample_name in result.sample_results.keys():
+        print(f"    {sample_name}")
 
-        if "sample_results" in result:
-            print("\nSamples:")
-
-            for sample_name in result["sample_results"].keys():
-                print(f"    {sample_name}")
+    if result.condensed_df is not None:
+        print("\nCondensed dataframe preview:")
+        print(result.condensed_df.head())

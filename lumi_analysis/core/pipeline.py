@@ -2,6 +2,7 @@ from pathlib import Path
 
 from lumi_analysis.core.grouping import create_groups_from_folder
 from lumi_analysis.core.analysis import run_analysis
+from lumi_analysis.core.results import LumiAnalysisResult
 
 
 def validate_pipeline_config(config):
@@ -61,7 +62,7 @@ def run_lumi_pipeline(config):
 
     print_pipeline_summary(config, groups)
 
-    result = run_analysis(
+    analysis_result = run_analysis(
         input_folder=config["input_folder"],
         groups=groups,
         experiment_type=config.get("experiment_type", "tissue"),
@@ -71,7 +72,11 @@ def run_lumi_pipeline(config):
         output_folder=config["output_folder"],
     )
 
-    result["groups"] = groups
-    result["config"] = config
-
-    return result
+    return LumiAnalysisResult(
+        sample_results=analysis_result["sample_results"],
+        full_dfs=analysis_result["full_dfs"],
+        groups=groups,
+        config=config,
+        complete_df=analysis_result.get("complete_df"),
+        condensed_df=analysis_result.get("condensed_df"),
+    )
