@@ -8,6 +8,8 @@ from lumi_analysis.core.dataframes import (
     create_condensed_df,
 )
 
+from lumi_analysis.export.excel_export import save_tissue_data
+
 
 def build_file_paths(input_folder, file_names, suffix="_Raw.csv"):
     input_folder = Path(input_folder)
@@ -58,18 +60,16 @@ def run_analysis(
 
             full_dfs.append(full_df)
 
-        complete_df = create_complete_df(
-            full_dfs,
-            save_file=False,
-            folder_name=folder_name,
-        )
+        complete_df = create_complete_df(full_dfs)
+        condensed_df = create_condensed_df(complete_df)
 
-        condensed_df = create_condensed_df(
-            complete_df,
-            tissue_labels,
-            save_file=save_file,
-            folder_name=folder_name,
-        )
+        if save_file:
+            save_tissue_data(
+                condensed_df,
+                "Data - complete",
+                tissue_labels=tissue_labels,
+                folder_name=folder_name,
+            )
 
         return {
             "full_dfs": full_dfs,
@@ -89,6 +89,7 @@ def run_analysis(
 
             full_df = analyse_cell_population(
                 paths,
+                filenames=file_names,
                 sample_name=sample_name,
                 save_file=save_file,
             )
