@@ -91,16 +91,19 @@ def run_analysis(
                 suffix=suffix,
             )
 
-            full_df = analyse_cell_population(
+            sample_result = analyse_cell_population(
                 paths,
                 filenames=file_names,
                 sample_name=sample_name,
                 save_file=save_file,
                 output_folder=output_folder,
+                return_intermediate=True,
             )
 
-            full_dfs.append(full_df)
+            full_dfs.append(sample_result["avg_df"])
+            sample_results[sample_name] = sample_result
 
         return {
+            "sample_results": sample_results,
             "full_dfs": full_dfs,
         }

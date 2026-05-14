@@ -18,28 +18,28 @@ def analyse_cell_population(
     save_file=True,
     sample_name=None,
     output_folder=None,
+    return_intermediate=False,
 ):
-    dfs = load_files(path_lst)
+    raw_dfs = load_files(path_lst)
 
     if filenames is None:
         filenames = [
             f"file_{i + 1}"
-            for i in range(len(dfs))
+            for i in range(len(raw_dfs))
         ]
 
     processed_dfs = preprocess_replicates(
-        dfs=dfs,
+        dfs=raw_dfs,
         filenames=filenames,
         noise_max=noise_max,
         remove_noise=True,
         keep_all_rows=False,
     )
 
-    dfs_aligned = assert_interval_overlaps(processed_dfs)
+    aligned_dfs = assert_interval_overlaps(processed_dfs)
 
-    avg_df = create_cell_population_avg_df(dfs_aligned)
+    avg_df = create_cell_population_avg_df(aligned_dfs)
 
-    # Temporary backward-compatible saving.
     if save_file:
         folder_path = ensure_output_folder(output_folder)
 
@@ -51,5 +51,15 @@ def analyse_cell_population(
         file_path = folder_path / filename
 
         avg_df.to_csv(file_path, index=False)
+
+    if return_intermediate:
+        return {
+            "sample": sample_name,
+            "filenames": filenames,
+            "raw_dfs": raw_dfs,
+            "processed_dfs": processed_dfs,
+            "aligned_dfs": aligned_dfs,
+            "avg_df": avg_df,
+        }
 
     return avg_df
