@@ -44,3 +44,9 @@ if __name__ == "__main__":
 
         for key in result.keys():
             print(f"    {key}")
+
+        if "sample_results" in result:
+            print("\nSamples:")
+
+            for sample_name in result["sample_results"].keys():
+                print(f"    {sample_name}")

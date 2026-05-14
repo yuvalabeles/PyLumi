@@ -14,26 +14,27 @@ def analyse_tissue(
     save_file=True,
     sample=None,
     output_folder=None,
+    return_intermediate=False,
 ):
-    dfs = load_files(path_lst)
+    raw_dfs = load_files(path_lst)
 
     keep_all_rows = sample == "Extra"
 
     processed_dfs = preprocess_replicates(
-        dfs=dfs,
+        dfs=raw_dfs,
         filenames=filenames,
         noise_max=noise_max,
         remove_noise=remove_noise,
         keep_all_rows=keep_all_rows,
     )
 
-    dfs_aligned = assert_interval_overlaps(processed_dfs)
+    aligned_dfs = assert_interval_overlaps(processed_dfs)
 
-    for df in dfs_aligned:
+    for df in aligned_dfs:
         df.drop(" Baseline", axis=1, inplace=True)
 
     full_df = create_sub_df(
-        dfs_aligned,
+        aligned_dfs,
         filenames,
         sample=sample,
     )
@@ -50,5 +51,15 @@ def analyse_tissue(
             excel=False,
             output_folder=output_folder,
         )
+
+    if return_intermediate:
+        return {
+            "sample": sample,
+            "filenames": filenames,
+            "raw_dfs": raw_dfs,
+            "processed_dfs": processed_dfs,
+            "aligned_dfs": aligned_dfs,
+            "full_df": full_df,
+        }
 
     return full_df

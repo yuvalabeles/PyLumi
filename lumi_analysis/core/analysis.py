@@ -30,6 +30,7 @@ def run_analysis(
     output_folder=None,
 ):
     full_dfs = []
+    sample_results = {}
 
     if experiment_type not in ["tissue", "cell_population"]:
         raise ValueError("experiment_type must be either 'tissue' or 'cell_population'")
@@ -50,15 +51,17 @@ def run_analysis(
                 suffix=suffix,
             )
 
-            full_df = analyse_tissue(
+            sample_result = analyse_tissue(
                 paths,
                 file_names,
                 save_file=save_file,
                 sample=sample_name,
                 output_folder=output_folder,
+                return_intermediate=True,
             )
 
-            full_dfs.append(full_df)
+            full_dfs.append(sample_result["full_df"])
+            sample_results[sample_name] = sample_result
 
         complete_df = create_complete_df(full_dfs)
         condensed_df = create_condensed_df(complete_df)
@@ -72,6 +75,7 @@ def run_analysis(
             )
 
         return {
+            "sample_results": sample_results,
             "full_dfs": full_dfs,
             "complete_df": complete_df,
             "condensed_df": condensed_df,
