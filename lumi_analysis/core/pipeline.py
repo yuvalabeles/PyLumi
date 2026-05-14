@@ -8,7 +8,7 @@ def validate_pipeline_config(config):
     required_keys = [
         "input_folder",
         "replicates_per_group",
-        "folder_name",
+        "output_folder",
     ]
 
     missing_keys = [
@@ -38,7 +38,7 @@ def print_pipeline_summary(config, groups):
     print("\nLumi Analysis pipeline")
     print("----------------------")
     print(f"Input folder: {config['input_folder']}")
-    print(f"Output folder: {config['folder_name']}")
+    print(f"Output folder: {config['output_folder']}")
     print(f"Experiment type: {config.get('experiment_type', 'tissue')}")
     print(f"Replicates per group: {config['replicates_per_group']}")
 
@@ -68,7 +68,7 @@ def run_lumi_pipeline(config):
         tissue_labels=config.get("tissue_labels"),
         save_file=config.get("save_file", True),
         suffix=config.get("file_suffix", "_Raw.csv"),
-        folder_name=config["folder_name"],
+        output_folder=config["output_folder"],
     )
 
     result["groups"] = groups

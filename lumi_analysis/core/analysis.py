@@ -27,7 +27,7 @@ def run_analysis(
     tissue_labels=None,
     save_file=True,
     suffix="_Raw.csv",
-    folder_name=None,
+    output_folder=None,
 ):
     full_dfs = []
 
@@ -55,7 +55,7 @@ def run_analysis(
                 file_names,
                 save_file=save_file,
                 sample=sample_name,
-                folder_name=folder_name,
+                output_folder=output_folder,
             )
 
             full_dfs.append(full_df)
@@ -68,7 +68,7 @@ def run_analysis(
                 condensed_df,
                 "Data - complete",
                 tissue_labels=tissue_labels,
-                folder_name=folder_name,
+                output_folder=output_folder,
             )
 
         return {

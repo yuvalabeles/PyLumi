@@ -17,7 +17,7 @@ def analyse_tissue(
     remove_noise=True,
     save_file=True,
     sample=None,
-    folder_name=None,
+    output_folder=None,
 ):
     # Load files.
     dfs = load_files(path_lst)
@@ -79,7 +79,7 @@ def analyse_tissue(
             full_df,
             filename[0:-1],
             excel=False,
-            folder_name=folder_name,
+            output_folder=output_folder,
         )
 
     return full_df

@@ -30,7 +30,7 @@ config = {
     "save_file": True,
 
     # Output
-    "folder_name": "test_output",
+    "output_folder": "test_output",
 }
 
 

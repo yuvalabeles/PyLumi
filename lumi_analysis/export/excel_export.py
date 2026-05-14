@@ -3,13 +3,13 @@ from pathlib import Path
 import pandas as pd
 
 
-def ensure_output_folder(folder_name):
-    if folder_name is None:
+def ensure_output_folder(output_folder):
+    if output_folder is None:
         raise ValueError(
-            "folder_name must be provided explicitly."
+            "output_folder must be provided explicitly."
         )
 
-    folder_path = Path(folder_name)
+    folder_path = Path(output_folder)
     folder_path.mkdir(parents=True, exist_ok=True)
 
     return folder_path
@@ -21,9 +21,9 @@ def save_tissue_data(
     excel=True,
     col_width=12,
     tissue_labels=None,
-    folder_name=None,
+    output_folder=None,
 ):
-    folder_path = ensure_output_folder(folder_name)
+    folder_path = ensure_output_folder(output_folder)
 
     # Save dataframe as Excel.
     if excel:
