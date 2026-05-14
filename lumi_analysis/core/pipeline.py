@@ -68,7 +68,7 @@ def run_lumi_pipeline(config):
         input_folder=config["input_folder"],
         groups=groups,
         experiment_type=config.get("experiment_type", "tissue"),
-        tissue_labels=config.get("tissue_labels"),
+        group_labels=config.get("group_labels"),
         save_file=config.get("save_file", True),
         suffix=config.get("file_suffix", "_Raw.csv"),
         output_folder=config["output_folder"],

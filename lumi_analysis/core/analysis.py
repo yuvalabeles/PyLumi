@@ -8,7 +8,7 @@ from lumi_analysis.core.dataframes import (
     create_condensed_df,
 )
 
-from lumi_analysis.export.excel_export import save_tissue_data
+from lumi_analysis.export.excel_export import save_group_data
 
 
 def build_file_paths(input_folder, file_names, suffix="_Raw.csv"):
@@ -24,7 +24,7 @@ def run_analysis(
     input_folder,
     groups,
     experiment_type="tissue",
-    tissue_labels=None,
+    group_labels=None,
     save_file=True,
     suffix="_Raw.csv",
     output_folder=None,
@@ -41,8 +41,8 @@ def run_analysis(
         raise TypeError("groups must be a dictionary: dict[str, list[str]]")
 
     if experiment_type == "tissue":
-        if tissue_labels is None:
-            tissue_labels = list(groups.keys())
+        if group_labels is None:
+            group_labels = list(groups.keys())
 
         for sample_name, file_names in groups.items():
             print(f"[*] Analysing tissue: {sample_name}, from: {file_names}")
@@ -71,10 +71,10 @@ def run_analysis(
         condensed_df = create_condensed_df(complete_df)
 
         if save_file:
-            save_tissue_data(
+            save_group_data(
                 condensed_df,
                 "Data - complete",
-                tissue_labels=tissue_labels,
+                group_labels=group_labels,
                 output_folder=output_folder,
             )
 
@@ -105,7 +105,7 @@ def run_analysis(
                 return_intermediate=True,
             )
 
-            full_dfs.append(sample_result["avg_df"])
+            full_dfs.append(sample_result["full_df"])
             sample_results[sample_name] = sample_result
 
         return {

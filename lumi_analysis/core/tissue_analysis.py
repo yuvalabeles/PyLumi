@@ -3,7 +3,7 @@ from lumi_analysis.core.validation import assert_interval_overlaps
 from lumi_analysis.core.preprocessing import preprocess_replicates
 from lumi_analysis.core.dataframes import create_sub_df
 
-from lumi_analysis.export.excel_export import save_tissue_data
+from lumi_analysis.export.excel_export import save_group_data
 
 
 def analyse_tissue(
@@ -45,7 +45,7 @@ def analyse_tissue(
         else:
             filename = "_".join(filenames)
 
-        save_tissue_data(
+        save_group_data(
             full_df,
             filename[0:-1],
             excel=False,

@@ -16,7 +16,7 @@ config = {
     # -------------------------------------------------------------------------
     "input_folder": (
         r"C:/Users/yuval/OneDrive/Desktop/Lumi/"
-        r"control males 5.4.26/Analysis/"
+        r"12.4.26/DM3_Lumi1 Allicin-Dex/Allicin 3 25uM-Dex/Analysis/Analysis/"
     ),
 
     # -------------------------------------------------------------------------
@@ -32,7 +32,7 @@ config = {
     #   "tissue"          = tissue/slice samples
     #   "cell_population" = cell population samples
     # -------------------------------------------------------------------------
-    "experiment_type": "tissue",
+    "experiment_type": "cell_population",
 
     # -------------------------------------------------------------------------
     # 4. GROUPING
@@ -40,7 +40,7 @@ config = {
     # Example:
     # If each tissue has 5 replicate files, use 5.
     # -------------------------------------------------------------------------
-    "replicates_per_group": 5,
+    "replicates_per_group": 3,
 
     # Optional sample names.
     # These names will be assigned to groups according to the detected file order.
@@ -51,12 +51,7 @@ config = {
     # Then the groups will be named automatically:
     # Group_1, Group_2, Group_3, ...
     "sample_tags": [
-        "Liver1",
-        "Liver2",
-        "Kid1",
-        "Kid2",
-        "Lung1",
-        "Lung2",
+        "control"
     ],
 
     # What to do with leftover files that do not complete a full group.

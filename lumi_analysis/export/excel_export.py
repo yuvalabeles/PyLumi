@@ -15,12 +15,12 @@ def ensure_output_folder(output_folder):
     return folder_path
 
 
-def save_tissue_data(
+def save_group_data(
     df,
     filename,
     excel=True,
     col_width=12,
-    tissue_labels=None,
+    group_labels=None,
     output_folder=None,
 ):
     folder_path = ensure_output_folder(output_folder)
@@ -102,7 +102,7 @@ def save_tissue_data(
                         col - 5,
                         0,
                         col,
-                        tissue_labels[label_id],
+                        group_labels[label_id],
                         group_header_format,
                     )
 
@@ -126,10 +126,10 @@ def save_tissue_data(
 
     # Save dataframe as CSV.
     else:
-        tissue_folder = folder_path / "Data (per tissue)"
-        tissue_folder.mkdir(exist_ok=True)
+        group_folder = folder_path / "Data (per group)"
+        group_folder.mkdir(exist_ok=True)
 
-        file_path = tissue_folder / f"{filename}.csv"
+        file_path = group_folder / f"{filename}.csv"
 
         df.to_csv(file_path, index=False)
 

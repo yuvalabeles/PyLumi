@@ -1,14 +1,9 @@
 from lumi_analysis.core.loading import load_files
 from lumi_analysis.core.validation import assert_interval_overlaps
 from lumi_analysis.core.preprocessing import preprocess_replicates
+from lumi_analysis.core.dataframes import create_sub_df
 
-from lumi_analysis.core.dataframes import (
-    create_cell_population_avg_df,
-)
-
-from lumi_analysis.export.excel_export import (
-    ensure_output_folder,
-)
+from lumi_analysis.export.excel_export import save_group_data
 
 
 def analyse_cell_population(
@@ -38,19 +33,21 @@ def analyse_cell_population(
 
     aligned_dfs = assert_interval_overlaps(processed_dfs)
 
-    avg_df = create_cell_population_avg_df(aligned_dfs)
+    full_df = create_sub_df(
+        aligned_dfs,
+        filenames,
+        sample=sample_name,
+    )
 
     if save_file:
-        folder_path = ensure_output_folder(output_folder)
+        filename = sample_name if sample_name is not None else "_".join(filenames)
 
-        filename = "avg_df.csv"
-
-        if sample_name is not None:
-            filename = sample_name + filename
-
-        file_path = folder_path / filename
-
-        avg_df.to_csv(file_path, index=False)
+        save_group_data(
+            full_df,
+            filename,
+            excel=False,
+            output_folder=output_folder,
+        )
 
     if return_intermediate:
         return {
@@ -59,7 +56,7 @@ def analyse_cell_population(
             "raw_dfs": raw_dfs,
             "processed_dfs": processed_dfs,
             "aligned_dfs": aligned_dfs,
-            "avg_df": avg_df,
+            "full_df": full_df,
         }
 
-    return avg_df
+    return full_df
