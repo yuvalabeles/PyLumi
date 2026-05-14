@@ -6,12 +6,13 @@ from lumi_analysis.core.dataframes import create_sub_df
 from lumi_analysis.export.excel_export import save_group_data
 
 
-def analyse_cell_population(
+def analyse_group(
     path_lst,
     filenames=None,
-    noise_max=20,
+    noise_max=25,
+    remove_noise=True,
     save_file=True,
-    sample_name=None,
+    group_name=None,
     output_folder=None,
     return_intermediate=False,
 ):
@@ -23,24 +24,30 @@ def analyse_cell_population(
             for i in range(len(raw_dfs))
         ]
 
+    keep_all_rows = group_name == "Extra"
+
     processed_dfs = preprocess_replicates(
         dfs=raw_dfs,
         filenames=filenames,
         noise_max=noise_max,
-        remove_noise=True,
-        keep_all_rows=False,
+        remove_noise=remove_noise,
+        keep_all_rows=keep_all_rows,
     )
 
     aligned_dfs = assert_interval_overlaps(processed_dfs)
 
+    for df in aligned_dfs:
+        if " Baseline" in df.columns:
+            df.drop(" Baseline", axis=1, inplace=True)
+
     full_df = create_sub_df(
         aligned_dfs,
         filenames,
-        sample=sample_name,
+        sample=group_name,
     )
 
     if save_file:
-        filename = sample_name if sample_name is not None else "_".join(filenames)
+        filename = group_name if group_name is not None else "_".join(filenames)
 
         save_group_data(
             full_df,
@@ -51,7 +58,7 @@ def analyse_cell_population(
 
     if return_intermediate:
         return {
-            "sample": sample_name,
+            "group": group_name,
             "filenames": filenames,
             "raw_dfs": raw_dfs,
             "processed_dfs": processed_dfs,

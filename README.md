@@ -1,4 +1,3 @@
-
 # Lumi Analysis
 
 Lumi Analysis is a Python pipeline for analysing Lumi luminescence experiments.
@@ -7,13 +6,10 @@ The pipeline receives raw CSV files exported from the Lumi software and produces
 - processed data tables
 - grouped replicate analysis
 - condensed summary tables
-- plots and visualizations (future stages)
 - inspectable intermediate processing stages
+- export-ready outputs for downstream plotting and analysis
 
-The project is designed for biological experiments involving:
-- tissue/slice samples
-- cell population samples
-
+The project is designed for grouped biological replicate experiments.
 
 ---
 
@@ -40,10 +36,9 @@ Lumi Analysis/
 Python 3.10+ recommended.
 
 Required packages:
-
-* pandas
-* numpy
-* openpyxl
+- pandas
+- numpy
+- openpyxl
 
 Install dependencies:
 
@@ -110,33 +105,18 @@ Folder where processed results will be saved.
 
 ---
 
-## Experiment type
-
-```python
-"experiment_type"
-```
-
-Options:
-
-```python
-"tissue"
-"cell_population"
-```
-
----
-
 ## Replicates per group
 
 ```python
 "replicates_per_group"
 ```
 
-Number of replicate files belonging to each sample.
+Number of replicate files belonging to each biological sample/group.
 
 Example:
 
 ```text
-5 replicate files per tissue sample
+5 replicate files per sample group
 ```
 
 ---
@@ -147,15 +127,15 @@ Example:
 "sample_tags"
 ```
 
-Optional sample names assigned to detected groups.
+Optional names assigned to detected groups.
 
 Example:
 
 ```python
 [
-    "Liver1",
-    "Liver2",
-    "Kid1",
+    "Control",
+    "Treatment_1",
+    "Treatment_2",
 ]
 ```
 
@@ -165,13 +145,32 @@ If set to:
 None
 ```
 
-groups will be named automatically:
+Groups will be named automatically:
 
 ```text
 Group_1
 Group_2
 Group_3
 ```
+
+---
+
+## Include extra group
+
+```python
+"include_extra_group"
+```
+
+Controls what happens when leftover files do not complete a full group.
+
+Options:
+
+```python
+True
+False
+```
+
+If enabled, leftover files are analysed as an additional group named `Extra`.
 
 ---
 
@@ -183,7 +182,7 @@ Group_3
 
 Minimum counts/sec value used to detect the beginning of the biological signal.
 
-All consecutive rows from the start, with counts below this threshold, are treated as pre-sample noise.
+Rows before this threshold are treated as pre-sample noise.
 
 ---
 
@@ -207,11 +206,10 @@ If enabled, the average pre-sample signal is subtracted from the data.
 # Output
 
 The pipeline generates:
-
-* processed replicate tables
-* complete combined tables
-* condensed analysis tables
-* intermediate analysis objects
+- processed replicate tables
+- combined full tables
+- condensed analysis tables
+- intermediate analysis objects
 
 All outputs are saved automatically into the selected output folder.
 
@@ -222,11 +220,10 @@ All outputs are saved automatically into the selected output folder.
 The pipeline stores intermediate processing stages internally.
 
 These include:
-
-* raw loaded dataframes
-* processed dataframes
-* aligned replicate dataframes
-* final result tables
+- raw loaded dataframes
+- processed dataframes
+- aligned replicate dataframes
+- final result tables
 
 This allows future interactive inspection and visualization.
 
@@ -271,13 +268,9 @@ and:
 # Future Development
 
 Planned features:
-
-* interactive plotting
-* Streamlit graphical interface
-* manual replicate grouping
-* parameter tuning UI
-* intermediate-stage visualization
-* automated report generation
-
-```
-```
+- interactive plotting
+- Streamlit graphical interface
+- manual replicate grouping
+- parameter tuning UI
+- intermediate-stage visualization
+- automated report generation

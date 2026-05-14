@@ -4,7 +4,7 @@ from typing import Any
 
 @dataclass
 class LumiAnalysisResult:
-    sample_results: dict[str, dict[str, Any]]
+    group_results: dict[str, dict[str, Any]]
     full_dfs: list
     groups: dict[str, list[str]]
     config: dict

@@ -27,22 +27,14 @@ config = {
     "output_folder": "test_output",
 
     # -------------------------------------------------------------------------
-    # 3. EXPERIMENT TYPE
-    # Choose one option:
-    #   "tissue"          = tissue/slice samples
-    #   "cell_population" = cell population samples
-    # -------------------------------------------------------------------------
-    "experiment_type": "cell_population",
-
-    # -------------------------------------------------------------------------
-    # 4. GROUPING
+    # 3. GROUPING
     # How many raw files belong to each sample/group?
     # Example:
-    # If each tissue has 5 replicate files, use 5.
+    # If each biological sample has 5 replicate files, use 5.
     # -------------------------------------------------------------------------
     "replicates_per_group": 3,
 
-    # Optional sample names.
+    # Optional group names.
     # These names will be assigned to groups according to the detected file order.
     #
     # If you do not want to provide names, write:
@@ -51,7 +43,7 @@ config = {
     # Then the groups will be named automatically:
     # Group_1, Group_2, Group_3, ...
     "sample_tags": [
-        "control"
+        "control",
     ],
 
     # What to do with leftover files that do not complete a full group.
@@ -60,7 +52,7 @@ config = {
     "include_extra_group": False,
 
     # -------------------------------------------------------------------------
-    # 5. ANALYSIS SETTINGS
+    # 4. ANALYSIS SETTINGS
     # noise_max:
     #   The minimum counts/sec value that marks the beginning of the real signal.
     #   All consecutive rows from the start, with counts below this threshold,
@@ -74,7 +66,7 @@ config = {
     "remove_noise": True,
 
     # -------------------------------------------------------------------------
-    # 6. FILE SETTINGS
+    # 5. FILE SETTINGS
     # Usually these should not be changed.
     # Change only if the Lumi output files use different names.
     # -------------------------------------------------------------------------
@@ -83,7 +75,7 @@ config = {
     "file_suffix": "_Raw.csv",
 
     # -------------------------------------------------------------------------
-    # 7. SAVING
+    # 6. SAVING
     # True  = save processed files to output_folder.
     # False = run analysis without saving files.
     # -------------------------------------------------------------------------
@@ -101,9 +93,9 @@ if __name__ == "__main__":
 
     print("\nPipeline finished successfully.")
 
-    print("\nSamples analysed:")
-    for sample_name in result.sample_results.keys():
-        print(f"    {sample_name}")
+    print("\nGroups analysed:")
+    for group_name in result.group_results.keys():
+        print(f"    {group_name}")
 
     if result.condensed_df is not None:
         print("\nCondensed dataframe preview:")
