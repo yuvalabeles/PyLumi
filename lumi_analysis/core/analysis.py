@@ -92,6 +92,7 @@ def run_analysis(
                 filenames=file_names,
                 sample_name=sample_name,
                 save_file=save_file,
+                output_folder=output_folder,
             )
 
             full_dfs.append(full_df)

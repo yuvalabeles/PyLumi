@@ -6,6 +6,10 @@ from lumi_analysis.core.dataframes import (
     create_cell_population_avg_df,
 )
 
+from lumi_analysis.export.excel_export import (
+    ensure_output_folder,
+)
+
 
 def analyse_cell_population(
     path_lst,
@@ -13,6 +17,7 @@ def analyse_cell_population(
     noise_max=20,
     save_file=True,
     sample_name=None,
+    output_folder=None,
 ):
     dfs = load_files(path_lst)
 
@@ -36,11 +41,15 @@ def analyse_cell_population(
 
     # Temporary backward-compatible saving.
     if save_file:
+        folder_path = ensure_output_folder(output_folder)
+
         filename = "avg_df.csv"
 
         if sample_name is not None:
             filename = sample_name + filename
 
-        avg_df.to_csv(filename, index=False)
+        file_path = folder_path / filename
+
+        avg_df.to_csv(file_path, index=False)
 
     return avg_df
