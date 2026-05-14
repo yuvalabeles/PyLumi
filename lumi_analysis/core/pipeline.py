@@ -42,6 +42,8 @@ def print_pipeline_summary(config, groups):
     print(f"Output folder: {config['output_folder']}")
     print(f"Experiment type: {config.get('experiment_type', 'tissue')}")
     print(f"Replicates per group: {config['replicates_per_group']}")
+    print(f"Noise threshold: {config.get('noise_max', 25)}")
+    print(f"Remove noise: {config.get('remove_noise', True)}")
 
     print("\nGroups:")
     for group_name, files in groups.items():
@@ -70,6 +72,8 @@ def run_lumi_pipeline(config):
         save_file=config.get("save_file", True),
         suffix=config.get("file_suffix", "_Raw.csv"),
         output_folder=config["output_folder"],
+        noise_max=config.get("noise_max", 25),
+        remove_noise=config.get("remove_noise", True),
     )
 
     return LumiAnalysisResult(

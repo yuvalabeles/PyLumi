@@ -28,6 +28,8 @@ def run_analysis(
     save_file=True,
     suffix="_Raw.csv",
     output_folder=None,
+    noise_max=25,
+    remove_noise=True,
 ):
     full_dfs = []
     sample_results = {}
@@ -54,6 +56,8 @@ def run_analysis(
             sample_result = analyse_tissue(
                 paths,
                 file_names,
+                noise_max=noise_max,
+                remove_noise=remove_noise,
                 save_file=save_file,
                 sample=sample_name,
                 output_folder=output_folder,
@@ -94,6 +98,7 @@ def run_analysis(
             sample_result = analyse_cell_population(
                 paths,
                 filenames=file_names,
+                noise_max=noise_max,
                 sample_name=sample_name,
                 save_file=save_file,
                 output_folder=output_folder,
