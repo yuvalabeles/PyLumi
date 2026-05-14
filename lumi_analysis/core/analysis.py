@@ -1,8 +1,9 @@
 from pathlib import Path
 
-from lumi_analysis.core.legacy_analysis import (
-    analyse_tissue,
-    analyse_cell_population,
+from lumi_analysis.core.tissue_analysis import analyse_tissue
+from lumi_analysis.core.cell_population_analysis import analyse_cell_population
+
+from lumi_analysis.core.dataframes import (
     create_complete_df,
     create_condensed_df,
 )
