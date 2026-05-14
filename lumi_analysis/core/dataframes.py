@@ -26,24 +26,36 @@ def create_sub_df(dfs_aligned, filenames, sample=None):
     return full_df
 
 
+def create_cell_population_avg_df(dfs_aligned):
+    # Create an average dataframe for cell population samples.
+    avg_df = pd.DataFrame({
+        "Date": dfs_aligned[0]["Date"],
+        "Time (hr:min)": dfs_aligned[0]["Time (hr:min)"],
+        "Time (days)": dfs_aligned[0]["Time (days)"],
+    })
+
+    counts = pd.DataFrame({
+        f"counts/sec {i}": dfs_aligned[i]["counts/sec"]
+        for i in range(len(dfs_aligned))
+    })
+
+    avg_df["counts/sec"] = counts.mean(axis=1)
+
+    return avg_df
+
+
 def create_condensed_df(complete_df):
     # Create a dataframe for all data without date/time columns.
     complete_df = complete_df.copy()
 
     n = len(complete_df)
-
-    # Create a column of CT in hours.
     time_col = np.arange(n) / 6  # 10-minute steps in hours
-
-    # Create a blank/index column.
     indices = np.array(range(len(complete_df)))
 
-    # Add CT column to the complete dataframe.
     complete_df.insert(0, " ", indices)
     complete_df.insert(0, "CT [in hours]", time_col)
     complete_df["CT [in hours]"] = complete_df["CT [in hours]"].round(2)
 
-    # Drop all additional date/time columns.
     cols_to_drop = ["Date", "Time (hr:min)", "Time (days)"]
     condensed_df = complete_df.drop(columns=cols_to_drop)
 
@@ -53,8 +65,6 @@ def create_condensed_df(complete_df):
 def create_complete_df(full_dfs):
     # Create the full dataframe of the analysis.
     result_parts = []
-
-    # Create a blank column with the same number of rows.
     blank = pd.DataFrame(np.nan, index=full_dfs[0].index, columns=[""])
 
     for i, df_ in enumerate(full_dfs):
