@@ -36,10 +36,10 @@ config = {
 
     # Optional group names.
     # These names will be assigned to groups according to the detected file order.
+    # For example, if you are running the Lumi on tissue samples, use the names of each tissue.
     #
     # If you do not want to provide names, write:
     # "sample_tags": None,
-    #
     # Then the groups will be named automatically:
     # Group_1, Group_2, Group_3, ...
     "sample_tags": [
