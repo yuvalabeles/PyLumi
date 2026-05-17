@@ -3,6 +3,7 @@ from pathlib import Path
 from lumi_analysis.core.grouping import create_groups_from_folder
 from lumi_analysis.core.analysis import run_analysis
 from lumi_analysis.core.results import LumiAnalysisResult
+from lumi_analysis.plotting import plot_raw_replicates
 
 
 def validate_pipeline_config(config):
@@ -43,10 +44,56 @@ def print_pipeline_summary(config, groups):
     print(f"Replicates per group: {config['replicates_per_group']}")
     print(f"Noise threshold: {config.get('noise_max', 25)}")
     print(f"Remove noise: {config.get('remove_noise', True)}")
+    print(f"Max rows: {config.get('max_rows')}")
+    print(f"Max hours: {config.get('max_hours')}")
+    print(f"Max days: {config.get('max_days')}")
+    print(f"Plot raw data: {config.get('plot_raw_data', False)}")
 
     print("\nGroups:")
     for group_name, files in groups.items():
         print(f"{group_name}: {files}")
+
+
+def get_group_plot_setting(config, group_name, setting_name, default=None):
+    # Return group-specific plotting setting if provided,
+    # otherwise fall back to the global config setting.
+    group_settings = config.get("plot_group_settings", {})
+    current_group_settings = group_settings.get(group_name, {})
+
+    return current_group_settings.get(
+        setting_name,
+        config.get(setting_name, default),
+    )
+
+
+def plot_pipeline_results(config, analysis_result):
+    if not config.get("plot_raw_data", False):
+        return
+
+    for group_name, group_result in analysis_result["group_results"].items():
+        group_df = group_result["full_df"]
+
+        plot_raw_replicates(
+            group_df,
+            title=f"{group_name} - raw data",
+            save_path=(
+                f"{config['output_folder']}/"
+                f"{group_name}_raw_plot.png"
+            ),
+            show=get_group_plot_setting(config, group_name, "show_plots", False),
+            close=get_group_plot_setting(config, group_name, "close_plots", True),
+            plot_style=get_group_plot_setting(config, group_name, "plot_style", "points"),
+            y_limit=get_group_plot_setting(config, group_name, "y_limit", None),
+            figsize=get_group_plot_setting(config, group_name, "figsize", (9, 5)),
+            description=get_group_plot_setting(config, group_name, "description", None),
+            replicate_markersize=get_group_plot_setting(config, group_name, "replicate_markersize", 2),
+            replicate_linewidth=get_group_plot_setting(config, group_name, "replicate_linewidth", 1.2),
+            replicate_alpha=get_group_plot_setting(config, group_name, "replicate_alpha", 0.75),
+            average_markersize=get_group_plot_setting(config, group_name, "average_markersize", 3),
+            average_linewidth=get_group_plot_setting(config, group_name, "average_linewidth", 2.2),
+            average_color=get_group_plot_setting(config, group_name, "average_color", "black"),
+            average_alpha=get_group_plot_setting(config, group_name, "average_alpha", 0.85),
+        )
 
 
 def run_lumi_pipeline(config):
@@ -72,7 +119,13 @@ def run_lumi_pipeline(config):
         output_folder=config["output_folder"],
         noise_max=config.get("noise_max", 25),
         remove_noise=config.get("remove_noise", True),
+        max_rows=config.get("max_rows"),
+        max_hours=config.get("max_hours"),
+        max_days=config.get("max_days"),
+        interval_minutes=config.get("interval_minutes", 10),
     )
+
+    plot_pipeline_results(config, analysis_result)
 
     return LumiAnalysisResult(
         group_results=analysis_result["group_results"],

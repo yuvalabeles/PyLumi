@@ -28,6 +28,10 @@ def run_analysis(
     output_folder=None,
     noise_max=25,
     remove_noise=True,
+    max_rows=None,
+    max_hours=None,
+    max_days=None,
+    interval_minutes=10,
 ):
     full_dfs = []
     group_results = {}
@@ -56,6 +60,10 @@ def run_analysis(
             group_name=group_name,
             output_folder=output_folder,
             return_intermediate=True,
+            max_rows=max_rows,
+            max_hours=max_hours,
+            max_days=max_days,
+            interval_minutes=interval_minutes,
         )
 
         full_dfs.append(group_result["full_df"])

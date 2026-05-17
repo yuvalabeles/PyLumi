@@ -1,6 +1,6 @@
 from lumi_analysis.core.loading import load_files
 from lumi_analysis.core.validation import assert_interval_overlaps
-from lumi_analysis.core.preprocessing import preprocess_replicates
+from lumi_analysis.core.preprocessing import preprocess_replicates, crop_replicates_tail
 from lumi_analysis.core.dataframes import create_sub_df
 
 from lumi_analysis.export.excel_export import save_group_data
@@ -15,6 +15,10 @@ def analyse_group(
     group_name=None,
     output_folder=None,
     return_intermediate=False,
+    max_rows=None,
+    max_hours=None,
+    max_days=None,
+    interval_minutes=10,
 ):
     raw_dfs = load_files(path_lst)
 
@@ -35,6 +39,14 @@ def analyse_group(
     )
 
     aligned_dfs = assert_interval_overlaps(processed_dfs)
+
+    aligned_dfs = crop_replicates_tail(
+        dfs=aligned_dfs,
+        max_rows=max_rows,
+        max_hours=max_hours,
+        max_days=max_days,
+        interval_minutes=interval_minutes,
+    )
 
     for df in aligned_dfs:
         if " Baseline" in df.columns:

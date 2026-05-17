@@ -80,6 +80,79 @@ config = {
     # False = run analysis without saving files.
     # -------------------------------------------------------------------------
     "save_file": True,
+
+    # -------------------------------------------------------------------------
+    # 7. DATA LENGTH / TAIL CUTTING
+    # Optional: limit analysis to the first N rows/hours/days after alignment.
+    # Use only one of max_rows, max_hours, max_days.
+    # Leave all as None to keep the full data.
+    # -------------------------------------------------------------------------
+    "interval_minutes": 10,
+    "max_rows": None,
+    "max_hours": None,
+    "max_days": 7,
+
+    # -------------------------------------------------------------------------
+    # 8. PLOTTING SETTINGS
+    # These settings control raw-data plots.
+    # Global settings apply to all groups unless overridden in plot_group_settings.
+    # -------------------------------------------------------------------------
+
+    # True  = create and save raw-data plots.
+    # False = do not create raw-data plots.
+    "plot_raw_data": True,
+
+    # Plot display style.
+    # Options:
+    # "points"      = plot data as points only
+    # "line"        = plot data as continuous lines
+    # "points+line" = plot points connected by lines
+    "plot_style": "points",
+
+    # Y-axis limit.
+    # None       = automatic y-axis scaling.
+    # 500        = y-axis from 0 to 500.
+    # (-100,500) = y-axis from -100 to 500.
+    "y_limit": None,
+
+    # Figure size in inches: (width, height).
+    "figsize": (9, 5),
+
+    # Optional text shown in the top-right corner of the plot.
+    # Use None for no description.
+    "description": None,
+
+    # Replicate appearance.
+    # Used for individual replicate curves/points.
+    "replicate_markersize": 2,
+    "replicate_linewidth": 1.2,
+    "replicate_alpha": 0.75,
+
+    # Average appearance.
+    # Used for the average curve/points.
+    "average_markersize": 3,
+    "average_linewidth": 2.2,
+    "average_color": "black",
+    "average_alpha": 0.85,
+
+    # Plot display behavior.
+    # show_plots=False avoids plt.show(), which is safer in PyCharm.
+    # close_plots=True closes figures after saving to avoid memory buildup.
+    "show_plots": False,
+    "close_plots": True,
+
+    # Optional group-specific overrides.
+    # Use this when different groups need different y-limits, sizes, styles, etc.
+    # Any value written here overrides the global value above only for that group.
+    "plot_group_settings": {
+        # Example:
+        # "control": {
+        #     "y_limit": 500,
+        #     "figsize": (10, 5),
+        #     "average_markersize": 4,
+        # },
+    },
+
 }
 
 
