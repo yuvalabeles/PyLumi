@@ -32,6 +32,7 @@ def run_analysis(
     max_hours=None,
     max_days=None,
     interval_minutes=10,
+    ct_start_hour=0,
 ):
     full_dfs = []
     group_results = {}
@@ -70,7 +71,12 @@ def run_analysis(
         group_results[group_name] = group_result
 
     complete_df = create_complete_df(full_dfs)
-    condensed_df = create_condensed_df(complete_df)
+
+    condensed_df = create_condensed_df(
+        complete_df,
+        interval_minutes=interval_minutes,
+        ct_start_hour=ct_start_hour,
+    )
 
     if save_file:
         save_group_data(

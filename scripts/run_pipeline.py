@@ -147,6 +147,16 @@ config = {
     "show_plots": False,
     "close_plots": True,
 
+    # CT shift.
+    # This changes the CT values used in saved condensed data and plots.
+    # Example: ct_start_hour=6 means the first row is CT=6.
+    "ct_start_hour": 0,
+
+    # Left x-axis limit for plots.
+    # Usually keep 0 so the plot axis starts visually at 0,
+    # even if the first data point starts at shifted CT such as 6.
+    "x_axis_start": 0,
+
     # Optional group-specific overrides.
     # Use this when different groups need different y-limits, sizes, styles, etc.
     # Any value written here overrides the global value above only for that group.

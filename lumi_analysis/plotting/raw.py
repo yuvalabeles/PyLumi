@@ -118,6 +118,7 @@ def plot_raw_replicates(
     time_col=None,
     start_ct=0,
     interval_minutes=10,
+    x_axis_start=0,
     title=None,
     description=None,
     y_limit=None,
@@ -146,9 +147,12 @@ def plot_raw_replicates(
     visible_replicate_cols:
         Replicates shown on the plot.
 
-    This allows separating:
-    1. disabling a replicate from the average
-    2. only hiding a replicate visually
+    start_ct:
+        CT value assigned to the first row.
+
+    x_axis_start:
+        Left x-axis limit. Usually 0, so shifted CT data can still be shown
+        on a plot whose axis visually starts at 0.
     """
 
     all_replicate_cols = get_lumi_replicate_columns(df, mean_col=mean_col)
@@ -190,9 +194,6 @@ def plot_raw_replicates(
 
     fig, ax = plt.subplots(figsize=figsize)
 
-    # -------------------------------------------------------------------------
-    # Plot replicates
-    # -------------------------------------------------------------------------
     for col in visible_replicate_cols:
         y = df[col].to_numpy(dtype=float)
 
@@ -207,9 +208,6 @@ def plot_raw_replicates(
             alpha=replicate_alpha,
         )
 
-    # -------------------------------------------------------------------------
-    # Compute average
-    # -------------------------------------------------------------------------
     if recompute_mean:
         average_signal = df[mean_replicate_cols].mean(axis=1)
         average_label = "average"
@@ -220,9 +218,6 @@ def plot_raw_replicates(
         average_signal = df[mean_col]
         average_label = mean_col
 
-    # -------------------------------------------------------------------------
-    # Plot average
-    # -------------------------------------------------------------------------
     plot_signal(
         ax=ax,
         time=time,
@@ -236,13 +231,14 @@ def plot_raw_replicates(
         zorder=5,
     )
 
-    # -------------------------------------------------------------------------
-    # Figure styling
-    # -------------------------------------------------------------------------
     if title is not None:
-        ax.set_title(str(title).title(), pad=20, fontsize=18, fontweight="bold")
+        ax.set_title(title, pad=20, fontsize=18)
 
-    format_lumi_raw_axis(ax, time)
+    format_lumi_raw_axis(
+        ax,
+        time,
+        x_axis_start=x_axis_start,
+    )
 
     if y_limit is not None:
         if isinstance(y_limit, tuple):
@@ -256,9 +252,9 @@ def plot_raw_replicates(
         loc="upper center",
         bbox_to_anchor=(0.5, -0.18),
         ncol=min(legend_items_count, 6),
-        frameon=True,
-        fontsize=12,
-        markerscale=5,
+        frameon=False,
+        fontsize=13,
+        markerscale=3,
     )
 
     add_figure_border(fig)
@@ -275,9 +271,6 @@ def plot_raw_replicates(
 
     fig.tight_layout()
 
-    # -------------------------------------------------------------------------
-    # Save figure
-    # -------------------------------------------------------------------------
     if save_path is not None:
         save_path = Path(save_path)
         save_path.parent.mkdir(parents=True, exist_ok=True)
@@ -289,9 +282,6 @@ def plot_raw_replicates(
             facecolor="white",
         )
 
-    # -------------------------------------------------------------------------
-    # Show / close
-    # -------------------------------------------------------------------------
     if show:
         plt.show()
 

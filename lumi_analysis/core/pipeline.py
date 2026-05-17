@@ -47,6 +47,8 @@ def print_pipeline_summary(config, groups):
     print(f"Max rows: {config.get('max_rows')}")
     print(f"Max hours: {config.get('max_hours')}")
     print(f"Max days: {config.get('max_days')}")
+    print(f"Interval minutes: {config.get('interval_minutes', 10)}")
+    print(f"CT start hour: {config.get('ct_start_hour', 0)}")
     print(f"Plot raw data: {config.get('plot_raw_data', False)}")
 
     print("\nGroups:")
@@ -100,6 +102,7 @@ def plot_pipeline_results(config, analysis_result):
 
             start_ct=config.get("ct_start_hour", 0),
             interval_minutes=config.get("interval_minutes", 10),
+            x_axis_start=get_group_plot_setting(config, group_name, "x_axis_start", 0),
         )
 
 
@@ -130,6 +133,7 @@ def run_lumi_pipeline(config):
         max_hours=config.get("max_hours"),
         max_days=config.get("max_days"),
         interval_minutes=config.get("interval_minutes", 10),
+        ct_start_hour=config.get("ct_start_hour", 0),
     )
 
     plot_pipeline_results(config, analysis_result)

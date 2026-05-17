@@ -8,15 +8,16 @@ def format_lumi_raw_axis(
     ylabel="counts / second",
     x_major_tick_hours=24,
     x_minor_tick_hours=12,
+    x_axis_start=0,
 ):
     ax.set_xlabel(xlabel, labelpad=10, fontsize=12)
     ax.set_ylabel(ylabel, labelpad=15, fontsize=12)
 
-    ax.set_xlim(left=float(np.nanmin(time)))
+    ax.set_xlim(left=x_axis_start)
 
     max_time = float(np.nanmax(time))
-    major_ticks = np.arange(0, max_time + x_major_tick_hours, x_major_tick_hours)
-    minor_ticks = np.arange(0, max_time + x_minor_tick_hours, x_minor_tick_hours)
+    major_ticks = np.arange(x_axis_start, max_time + x_major_tick_hours, x_major_tick_hours)
+    minor_ticks = np.arange(x_axis_start, max_time + x_minor_tick_hours, x_minor_tick_hours)
 
     ax.set_xticks(major_ticks)
     ax.set_xticks(minor_ticks, minor=True)

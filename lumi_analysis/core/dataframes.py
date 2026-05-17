@@ -44,12 +44,22 @@ def create_cell_population_avg_df(dfs_aligned):
     return avg_df
 
 
-def create_condensed_df(complete_df):
+def create_condensed_df(
+    complete_df,
+    interval_minutes=10,
+    ct_start_hour=0,
+):
     # Create a dataframe for all data without date/time columns.
+    # CT is shifted according to ct_start_hour.
     complete_df = complete_df.copy()
 
     n = len(complete_df)
-    time_col = np.arange(n) / 6  # 10-minute steps in hours
+
+    time_col = (
+        np.arange(n) * (interval_minutes / 60)
+        + ct_start_hour
+    )
+
     indices = np.array(range(len(complete_df)))
 
     complete_df.insert(0, " ", indices)
