@@ -50,6 +50,7 @@ def print_pipeline_summary(config, groups):
     print(f"Interval minutes: {config.get('interval_minutes', 10)}")
     print(f"CT start hour: {config.get('ct_start_hour', 0)}")
     print(f"Plot raw data: {config.get('plot_raw_data', False)}")
+    print(f"Plot peaks: {config.get('plot_peaks', False)}")
 
     print("\nGroups:")
     for group_name, files in groups.items():
@@ -99,6 +100,21 @@ def plot_pipeline_results(config, analysis_result):
             average_linewidth=get_group_plot_setting(config, group_name, "average_linewidth", 2.2),
             average_color=get_group_plot_setting(config, group_name, "average_color", "black"),
             average_alpha=get_group_plot_setting(config, group_name, "average_alpha", 0.85),
+
+            plot_peaks=get_group_plot_setting(config, group_name, "plot_peaks", False),
+            peaks_to_show=get_group_plot_setting(config, group_name, "peaks_to_show", None),
+            peaks_to_show_txt=get_group_plot_setting(config, group_name, "peaks_to_show_txt", None),
+            show_average_peaks=get_group_plot_setting(config, group_name, "show_average_peaks", True),
+            show_average_peaks_txt=get_group_plot_setting(config, group_name, "show_average_peaks_txt", True),
+
+            min_peak_distance_hours=get_group_plot_setting(config, group_name, "min_peak_distance_hours", 20),
+            peak_prominence=get_group_plot_setting(config, group_name, "peak_prominence", None),
+            peak_marker=get_group_plot_setting(config, group_name, "peak_marker", "x"),
+            peak_markersize=get_group_plot_setting(config, group_name, "peak_markersize", 7),
+            peak_markeredgewidth=get_group_plot_setting(config, group_name, "peak_markeredgewidth", 1.5),
+            peak_txt_dx=get_group_plot_setting(config, group_name, "peak_txt_dx", 2),
+            peak_txt_dy=get_group_plot_setting(config, group_name, "peak_txt_dy", 0),
+            peak_txt_fontsize=get_group_plot_setting(config, group_name, "peak_txt_fontsize", 8),
 
             start_ct=config.get("ct_start_hour", 0),
             interval_minutes=config.get("interval_minutes", 10),

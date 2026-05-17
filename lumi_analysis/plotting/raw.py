@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from lumi_analysis.plotting.style import format_lumi_raw_axis, add_figure_border
+from lumi_analysis.plotting.peaks import plot_peaks_for_signal
 
 
 LUMI_METADATA_COLUMNS = [
@@ -73,7 +74,7 @@ def plot_signal(
     validate_plot_style(plot_style)
 
     if plot_style == "points":
-        ax.plot(
+        line, = ax.plot(
             time,
             y,
             ".",
@@ -85,7 +86,7 @@ def plot_signal(
         )
 
     elif plot_style == "line":
-        ax.plot(
+        line, = ax.plot(
             time,
             y,
             color=color,
@@ -96,7 +97,7 @@ def plot_signal(
         )
 
     elif plot_style == "points+line":
-        ax.plot(
+        line, = ax.plot(
             time,
             y,
             color=color,
@@ -107,6 +108,10 @@ def plot_signal(
             label=label,
             zorder=zorder,
         )
+    else:
+        line = None
+
+    return line
 
 
 def plot_raw_replicates(
@@ -134,6 +139,19 @@ def plot_raw_replicates(
     average_linewidth=2.2,
     average_color="black",
     average_alpha=0.85,
+    plot_peaks=False,
+    peaks_to_show=None,
+    peaks_to_show_txt=None,
+    show_average_peaks=True,
+    show_average_peaks_txt=True,
+    min_peak_distance_hours=20,
+    peak_prominence=None,
+    peak_marker="x",
+    peak_markersize=7,
+    peak_markeredgewidth=1.5,
+    peak_txt_dx=2,
+    peak_txt_dy=0,
+    peak_txt_fontsize=8,
 ):
     """
     Plot raw Lumi data from a pipeline full_df.
@@ -146,6 +164,20 @@ def plot_raw_replicates(
 
     visible_replicate_cols:
         Replicates shown on the plot.
+
+    peaks_to_show:
+        Replicate columns for which peak X markers should be shown.
+        None = show peaks for all visible replicates when plot_peaks=True.
+
+    peaks_to_show_txt:
+        Replicate columns for which peak text labels should be shown.
+        None = no replicate peak text labels.
+
+    show_average_peaks:
+        Whether to show peak X markers for the recalculated average signal.
+
+    show_average_peaks_txt:
+        Whether to show peak text labels for the average signal.
 
     start_ct:
         CT value assigned to the first row.
@@ -163,6 +195,15 @@ def plot_raw_replicates(
     if visible_replicate_cols is None:
         visible_replicate_cols = all_replicate_cols
 
+    if plot_peaks:
+        if peaks_to_show is None:
+            peaks_to_show = visible_replicate_cols
+    else:
+        peaks_to_show = []
+
+    if peaks_to_show_txt is None:
+        peaks_to_show_txt = []
+
     if len(mean_replicate_cols) == 0:
         raise ValueError("mean_replicate_cols must include at least one replicate.")
 
@@ -176,11 +217,27 @@ def plot_raw_replicates(
         if col not in df.columns
     ]
 
+    missing_peak_cols = [
+        col for col in peaks_to_show
+        if col not in df.columns
+    ]
+
+    missing_peak_txt_cols = [
+        col for col in peaks_to_show_txt
+        if col not in df.columns
+    ]
+
     if missing_mean_cols:
         raise ValueError(f"Mean replicate columns not found: {missing_mean_cols}")
 
     if missing_visible_cols:
         raise ValueError(f"Visible replicate columns not found: {missing_visible_cols}")
+
+    if missing_peak_cols:
+        raise ValueError(f"Peak columns not found: {missing_peak_cols}")
+
+    if missing_peak_txt_cols:
+        raise ValueError(f"Peak text columns not found: {missing_peak_txt_cols}")
 
     time = get_lumi_time_axis(
         df=df,
@@ -194,10 +251,13 @@ def plot_raw_replicates(
 
     fig, ax = plt.subplots(figsize=figsize)
 
+    # -------------------------------------------------------------------------
+    # Plot replicates
+    # -------------------------------------------------------------------------
     for col in visible_replicate_cols:
         y = df[col].to_numpy(dtype=float)
 
-        plot_signal(
+        line = plot_signal(
             ax=ax,
             time=time,
             y=y,
@@ -208,6 +268,28 @@ def plot_raw_replicates(
             alpha=replicate_alpha,
         )
 
+        if plot_peaks and col in peaks_to_show:
+            color = line.get_color()
+
+            plot_peaks_for_signal(
+                ax=ax,
+                time=time,
+                signal=y,
+                color=color,
+                show_text=col in peaks_to_show_txt,
+                min_peak_distance_hours=min_peak_distance_hours,
+                prominence=peak_prominence,
+                marker=peak_marker,
+                markersize=peak_markersize,
+                markeredgewidth=peak_markeredgewidth,
+                text_dx=peak_txt_dx,
+                text_dy=peak_txt_dy,
+                text_fontsize=peak_txt_fontsize,
+            )
+
+    # -------------------------------------------------------------------------
+    # Compute average
+    # -------------------------------------------------------------------------
     if recompute_mean:
         average_signal = df[mean_replicate_cols].mean(axis=1)
         average_label = "average"
@@ -218,10 +300,15 @@ def plot_raw_replicates(
         average_signal = df[mean_col]
         average_label = mean_col
 
-    plot_signal(
+    average_y = average_signal.to_numpy(dtype=float)
+
+    # -------------------------------------------------------------------------
+    # Plot average
+    # -------------------------------------------------------------------------
+    average_line = plot_signal(
         ax=ax,
         time=time,
-        y=average_signal.to_numpy(dtype=float),
+        y=average_y,
         label=average_label,
         plot_style=plot_style,
         color=average_color,
@@ -231,6 +318,29 @@ def plot_raw_replicates(
         zorder=5,
     )
 
+    if plot_peaks and show_average_peaks:
+        average_peak_color = average_line.get_color()
+
+        plot_peaks_for_signal(
+            ax=ax,
+            time=time,
+            signal=average_y,
+            color=average_peak_color,
+            show_text=show_average_peaks_txt,
+            min_peak_distance_hours=min_peak_distance_hours,
+            prominence=peak_prominence,
+            marker=peak_marker,
+            markersize=peak_markersize,
+            markeredgewidth=peak_markeredgewidth,
+            text_dx=peak_txt_dx,
+            text_dy=peak_txt_dy,
+            text_fontsize=peak_txt_fontsize,
+            zorder=7,
+        )
+
+    # -------------------------------------------------------------------------
+    # Figure styling
+    # -------------------------------------------------------------------------
     if title is not None:
         ax.set_title(title, pad=20, fontsize=18)
 

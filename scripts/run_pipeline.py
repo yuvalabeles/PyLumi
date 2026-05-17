@@ -169,6 +169,44 @@ config = {
         # },
     },
 
+    # -------------------------------------------------------------------------
+    # 9. PEAK SETTINGS
+    # These settings control peak markers on raw-data plots.
+    # -------------------------------------------------------------------------
+
+    # True  = detect and mark peaks on raw-data plots.
+    # False = do not show peaks.
+    "plot_peaks": True,
+
+    # Which replicate peaks to show.
+    # None = show peaks for all visible replicates.
+    # []   = show no replicate peaks.
+    # Example: ["c i", "c iii"]
+    "peaks_to_show": None,
+
+    # Which replicate peaks should also get text labels.
+    # None or [] = no replicate peak text labels.
+    # Example: ["c iii"]
+    "peaks_to_show_txt": [],
+
+    # Average peak visibility.
+    "show_average_peaks": True,
+    "show_average_peaks_txt": True,
+
+    # Peak detection settings.
+    "min_peak_distance_hours": 20,
+    "peak_prominence": None,
+
+    # Peak marker appearance.
+    "peak_marker": "x",
+    "peak_markersize": 7,
+    "peak_markeredgewidth": 1.5,
+
+    # Peak text appearance/location.
+    "peak_txt_dx": 2,
+    "peak_txt_dy": 0,
+    "peak_txt_fontsize": 8,
+
 }
 
 
