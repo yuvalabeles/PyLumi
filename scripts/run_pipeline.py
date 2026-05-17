@@ -122,18 +122,24 @@ config = {
     # Use None for no description.
     "description": None,
 
-    # Replicate appearance.
-    # Used for individual replicate curves/points.
-    "replicate_markersize": 2,
-    "replicate_linewidth": 1.2,
-    "replicate_alpha": 0.75,
+    # Replicate control.
+    # None = use all replicate columns automatically.
+    #
+    # mean_replicate_cols controls which replicates are included in the average.
+    # visible_replicate_cols controls which replicates are shown on the plot.
+    #
+    # Example:
+    # "mean_replicate_cols": ["c i", "c iii"],
+    # "visible_replicate_cols": [],
+    #
+    # This would calculate the average from c i and c iii,
+    # but show only the average curve/points.
+    "mean_replicate_cols": None,
+    "visible_replicate_cols": None,
 
-    # Average appearance.
-    # Used for the average curve/points.
-    "average_markersize": 3,
-    "average_linewidth": 2.2,
-    "average_color": "black",
-    "average_alpha": 0.85,
+    # True  = recalculate the average from mean_replicate_cols.
+    # False = use the existing counts/sec (avg) column.
+    "recompute_mean": True,
 
     # Plot display behavior.
     # show_plots=False avoids plt.show(), which is safer in PyCharm.

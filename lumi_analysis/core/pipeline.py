@@ -76,23 +76,30 @@ def plot_pipeline_results(config, analysis_result):
         plot_raw_replicates(
             group_df,
             title=f"{group_name} - raw data",
-            save_path=(
-                f"{config['output_folder']}/"
-                f"{group_name}_raw_plot.png"
-            ),
+            save_path=f"{config['output_folder']}/{group_name}_raw_plot.png",
+
+            mean_replicate_cols=get_group_plot_setting(config, group_name, "mean_replicate_cols", None),
+            visible_replicate_cols=get_group_plot_setting(config, group_name, "visible_replicate_cols", None),
+            recompute_mean=get_group_plot_setting(config, group_name, "recompute_mean", True),
+
             show=get_group_plot_setting(config, group_name, "show_plots", False),
             close=get_group_plot_setting(config, group_name, "close_plots", True),
             plot_style=get_group_plot_setting(config, group_name, "plot_style", "points"),
             y_limit=get_group_plot_setting(config, group_name, "y_limit", None),
             figsize=get_group_plot_setting(config, group_name, "figsize", (9, 5)),
             description=get_group_plot_setting(config, group_name, "description", None),
+
             replicate_markersize=get_group_plot_setting(config, group_name, "replicate_markersize", 2),
             replicate_linewidth=get_group_plot_setting(config, group_name, "replicate_linewidth", 1.2),
             replicate_alpha=get_group_plot_setting(config, group_name, "replicate_alpha", 0.75),
+
             average_markersize=get_group_plot_setting(config, group_name, "average_markersize", 3),
             average_linewidth=get_group_plot_setting(config, group_name, "average_linewidth", 2.2),
             average_color=get_group_plot_setting(config, group_name, "average_color", "black"),
             average_alpha=get_group_plot_setting(config, group_name, "average_alpha", 0.85),
+
+            start_ct=config.get("ct_start_hour", 0),
+            interval_minutes=config.get("interval_minutes", 10),
         )
 
 
