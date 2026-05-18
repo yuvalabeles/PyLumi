@@ -181,6 +181,13 @@ def save_peaks_periods_tables_to_excel(
                 "valign": "vcenter",
             })
 
+            average_period_header_format = workbook.add_format({
+                "bold": True,
+                "align": "center",
+                "valign": "vcenter",
+                "bg_color": "#EADCF4",
+            })
+
             average_fill_format = workbook.add_format({
                 "bg_color": "#F2DCDB",
                 "align": "center",
@@ -199,8 +206,14 @@ def save_peaks_periods_tables_to_excel(
                 "bg_color": "#F2DCDB",
             })
 
+            average_period_format = workbook.add_format({
+                "align": "center",
+                "valign": "vcenter",
+                "bg_color": "#EADCF4",
+            })
+
             # Column width = 10 for all used columns
-            last_col = len(table.columns) - 1
+            last_col = len(table.columns)
             worksheet.set_column(0, last_col, 10)
 
             # Group name merged across the table width
@@ -234,8 +247,19 @@ def save_peaks_periods_tables_to_excel(
                 if col_idx == 0:
                     continue
 
-                if str(col_name).startswith("peak"):
+                if col_name == "average period":
+                    worksheet.merge_range(
+                        header_row,
+                        col_idx,
+                        header_row,
+                        col_idx + 1,
+                        col_name,
+                        average_period_header_format,
+                    )
+
+                elif str(col_name).startswith("peak"):
                     worksheet.write(header_row, col_idx, col_name, peak_header_format)
+
                 else:
                     worksheet.write(header_row, col_idx, col_name, centered_format)
 
@@ -248,6 +272,17 @@ def save_peaks_periods_tables_to_excel(
                     value = row[col_name]
 
                     if pd.isna(value):
+                        continue
+
+                    if col_name == "average period":
+                        worksheet.merge_range(
+                            excel_row,
+                            col_idx,
+                            excel_row,
+                            col_idx + 1,
+                            value,
+                            average_period_format,
+                        )
                         continue
 
                     if col_idx == 0:

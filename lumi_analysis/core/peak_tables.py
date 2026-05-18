@@ -36,16 +36,27 @@ def create_signal_peaks_periods_row(
         "replicate": signal_name,
     }
 
+    periods = []
+
     for i, peak_time in enumerate(peak_times, start=1):
         row[f"peak {i}"] = round(float(peak_time), decimals)
 
         if i < len(peak_times):
             period = float(peak_times[i] - peak_times[i - 1])
+            periods.append(period)
 
             if period_as_text:
                 row[f"Δ {i}-{i + 1}"] = f"({period:.{decimals}f} h)"
             else:
                 row[f"Δ {i}-{i + 1}"] = round(period, decimals)
+
+    if len(periods) > 0:
+        average_period = float(np.mean(periods))
+
+        if period_as_text:
+            row["average period"] = f"{average_period:.{decimals}f} h"
+        else:
+            row["average period"] = round(average_period, decimals)
 
     return row
 
@@ -124,6 +135,8 @@ def create_group_peaks_periods_table(
 
         if i < max_peak_number:
             ordered_columns.append(f"Δ {i}-{i + 1}")
+
+    ordered_columns.append("average period")
 
     table = table.reindex(columns=ordered_columns)
 

@@ -80,8 +80,8 @@ def plot_pipeline_results(config, analysis_result):
 
         plot_raw_replicates(
             group_df,
-            title=f"{group_name} - raw data",
-            save_path=f"{config['output_folder']}/{group_name}_raw_plot.png",
+            title=f"{group_name}",
+            save_path=f"{config['output_folder']}/Plots/{group_name}.png",
 
             mean_replicate_cols=get_group_plot_setting(config, group_name, "mean_replicate_cols", None),
             visible_replicate_cols=get_group_plot_setting(config, group_name, "visible_replicate_cols", None),

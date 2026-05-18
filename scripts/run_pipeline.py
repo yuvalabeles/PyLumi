@@ -17,7 +17,7 @@ config = {
 
     "input_folder": (
         r"C:/Users/yuval/OneDrive/Desktop/Lumi/"
-        r"12.4.26/DM3_Lumi1 Allicin-Dex/Allicin 3 25uM-Dex/Analysis/Analysis/"
+        r"ORG slices contr females 13.4.26/Analysis/"
     ),
 
     # ---------------------------------------------------------------------------------------------------------------- #
@@ -35,7 +35,7 @@ config = {
     # If each biological sample has 5 replicate files, use 5.
     # ---------------------------------------------------------------------------------------------------------------- #
 
-    "replicates_per_group": 3,
+    "replicates_per_group": 5,
 
     # Optional group names.
     # These names will be assigned to groups according to the detected file order.
@@ -46,7 +46,12 @@ config = {
     # Then the groups will be named automatically:
     # Group_1, Group_2, Group_3, ...
     "sample_tags": [
-        "control",
+        "Liver1",
+        "Liver2",
+        "Kid1",
+        "Kid2",
+        "Lung1",
+        "Lung2"
     ],
 
     # What to do with leftover files that do not complete a full group.
@@ -111,7 +116,7 @@ config = {
     # "points"      = plot data as points only
     # "line"        = plot data as continuous lines
     # "points+line" = plot points connected by lines
-    "plot_style": "points",
+    "plot_style": "line",
 
     # Y-axis limit:
     # None       = automatic y-axis scaling.
@@ -124,7 +129,7 @@ config = {
 
     # Optional text shown in the top-right corner of the plot:
     # Use None for no description or write your text in "...".
-    "description": None,
+    "description": "Control (females 13.4.26)",
 
     # Replicate control:
     # None = show in the figure and use for the mean all replicate columns automatically.
@@ -142,7 +147,7 @@ config = {
     # CT shift.
     # This changes the CT values used in saved condensed data and plots.
     # Example: ct_start_hour=6 means the first row is CT=6.
-    "ct_start_hour": 0,
+    "ct_start_hour": 6,
 
     # Left x-axis limit for plots.
     # Usually keep 0 so the plot axis starts visually at 0,
@@ -173,6 +178,8 @@ config = {
     # Average peak visibility.
     "show_average_peaks": True,
     "show_average_peaks_txt": True,
+
+    "peak_txt_dy": 20,
 
     # ---------------------------------------------------------------------------------------------------------------- #
     # 10. PEAK/PERIOD TABLE SETTINGS
