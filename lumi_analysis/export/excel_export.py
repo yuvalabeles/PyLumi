@@ -164,10 +164,12 @@ def save_peaks_periods_tables_to_excel(
                 "font_size": 16,
                 "align": "center",
                 "valign": "vcenter",
+                "border": 1
             })
 
             first_col_label_format = workbook.add_format({
                 "italic": True,
+                "border": 1
             })
 
             centered_format = workbook.add_format({
@@ -179,6 +181,7 @@ def save_peaks_periods_tables_to_excel(
                 "bold": True,
                 "align": "center",
                 "valign": "vcenter",
+                "border": 1
             })
 
             average_period_header_format = workbook.add_format({
@@ -186,12 +189,14 @@ def save_peaks_periods_tables_to_excel(
                 "align": "center",
                 "valign": "vcenter",
                 "bg_color": "#EADCF4",
+                "border": 1
             })
 
             average_fill_format = workbook.add_format({
                 "bg_color": "#F2DCDB",
                 "align": "center",
                 "valign": "vcenter",
+                "border": 1
             })
 
             average_peak_format = workbook.add_format({
@@ -199,17 +204,20 @@ def save_peaks_periods_tables_to_excel(
                 "bg_color": "#F2DCDB",
                 "align": "center",
                 "valign": "vcenter",
+                "border": 1
             })
 
             average_label_format = workbook.add_format({
                 "italic": True,
                 "bg_color": "#F2DCDB",
+                "border": 1
             })
 
             average_period_format = workbook.add_format({
                 "align": "center",
                 "valign": "vcenter",
                 "bg_color": "#EADCF4",
+                "border": 1
             })
 
             # Column width = 10 for all used columns
