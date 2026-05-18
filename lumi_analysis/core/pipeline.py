@@ -4,6 +4,8 @@ from lumi_analysis.core.grouping import create_groups_from_folder
 from lumi_analysis.core.analysis import run_analysis
 from lumi_analysis.core.results import LumiAnalysisResult
 from lumi_analysis.plotting import plot_raw_replicates
+from lumi_analysis.core.peak_tables import create_all_group_peaks_periods_tables
+from lumi_analysis.export.excel_export import save_peaks_periods_tables_to_excel
 
 
 def validate_pipeline_config(config):
@@ -153,6 +155,18 @@ def run_lumi_pipeline(config):
     )
 
     plot_pipeline_results(config, analysis_result)
+
+    if config.get("save_peak_tables", False):
+        peaks_periods_tables = create_all_group_peaks_periods_tables(
+            analysis_result=analysis_result,
+            config=config,
+            get_group_setting=get_group_plot_setting,
+        )
+
+        save_peaks_periods_tables_to_excel(
+            tables=peaks_periods_tables,
+            output_path=Path(config["output_folder"]) / "peaks_periods_tables.xlsx",
+        )
 
     return LumiAnalysisResult(
         group_results=analysis_result["group_results"],

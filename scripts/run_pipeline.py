@@ -14,6 +14,7 @@ config = {
     # The folder should contain files such as:
     # 1a_Raw.csv, 1b_Raw.csv, 2a_Raw.csv, etc.
     # ---------------------------------------------------------------------------------------------------------------- #
+
     "input_folder": (
         r"C:/Users/yuval/OneDrive/Desktop/Lumi/"
         r"12.4.26/DM3_Lumi1 Allicin-Dex/Allicin 3 25uM-Dex/Analysis/Analysis/"
@@ -24,6 +25,7 @@ config = {
     # Choose the name/path of the folder where processed results will be saved.
     # If the folder does not exist, it will be created automatically.
     # ---------------------------------------------------------------------------------------------------------------- #
+
     "output_folder": "test_output",
 
     # ---------------------------------------------------------------------------------------------------------------- #
@@ -32,6 +34,7 @@ config = {
     # Example:
     # If each biological sample has 5 replicate files, use 5.
     # ---------------------------------------------------------------------------------------------------------------- #
+
     "replicates_per_group": 3,
 
     # Optional group names.
@@ -62,6 +65,7 @@ config = {
     #   True  = subtract the average pre-sample noise from the signal.
     #   False = keep the signal without subtracting that background.
     # ---------------------------------------------------------------------------------------------------------------- #
+
     "noise_max": 25,
     "remove_noise": True,
 
@@ -69,6 +73,7 @@ config = {
     # 5. FILE SETTINGS
     # Usually these should NOT be changed. Change only if the Lumi output files use different names.
     # ---------------------------------------------------------------------------------------------------------------- #
+
     "extension": ".csv",
     "suffix_to_remove": "_Raw",
     "file_suffix": "_Raw.csv",
@@ -78,6 +83,7 @@ config = {
     # True  = save processed files to output_folder.
     # False = run analysis without saving files.
     # ---------------------------------------------------------------------------------------------------------------- #
+
     "save_file": True,
 
     # ---------------------------------------------------------------------------------------------------------------- #
@@ -85,6 +91,7 @@ config = {
     # Optional: limit analysis to the first N rows/hours/days after alignment.
     # Use only one of max_rows, max_hours, max_days. Leave all as None to keep the full data.
     # ---------------------------------------------------------------------------------------------------------------- #
+
     "interval_minutes": 10,
     "max_rows": None,
     "max_hours": None,
@@ -147,6 +154,7 @@ config = {
     # These settings control peak markers on raw-data plots.
     # Global settings apply to all groups unless overridden in plot_group_settings.
     # ---------------------------------------------------------------------------------------------------------------- #
+
     # True  = detect and mark peaks on raw-data plots.
     # False = do not show peaks.
     "plot_peaks": True,
@@ -167,12 +175,29 @@ config = {
     "show_average_peaks_txt": True,
 
     # ---------------------------------------------------------------------------------------------------------------- #
-    # Optional group-specific overrides.
+    # 10. PEAK/PERIOD TABLE SETTINGS
+    # ---------------------------------------------------------------------------------------------------------------- #
+
+    # True = create an Excel file with one peaks/periods table per group:
+    "save_peak_tables": True,
+
+    # Number of decimals in peak and period values:
+    "peak_table_decimals": 2,
+
+    # True  = period values are written as text like "(24.17 h)".
+    # False = period values are saved as numeric values.
+    "peak_table_period_as_text": True,
+
+    # Whether to include the average signal as an additional row:
+    "include_average_in_peak_table": True,
+
+    # ---------------------------------------------------------------------------------------------------------------- #
+    # Optional group-specific overrides:
     # Use this when different groups need different plot settings.
     # Any value written here overrides the global value above only for that group.
-    #
     # You can override regular plot settings AND peak settings here.
-    #
+    # ---------------------------------------------------------------------------------------------------------------- #
+
     # Example:
     # "plot_group_settings": {
     #     "control": {
@@ -190,9 +215,6 @@ config = {
     #     },
     # },
 
-    # Optional group-specific overrides.
-    # Use this when different groups need different y-limits, sizes, styles, peaks, etc.
-    # Any value written here overrides the global value above only for that group.
     "plot_group_settings": {
     },
 

@@ -134,160 +134,137 @@ def save_group_data(
         df.to_csv(file_path, index=False)
 
 
-def write_peaks_to_excel(
-    df,
-    table_title,
-    writer,
-    worksheet,
-    start_row,
-    decimals=2,
-    gap_rows=3,
+def save_peaks_periods_tables_to_excel(
+    tables,
+    output_path,
+    empty_rows_between_tables=2,
 ):
-    workbook = writer.book
+    # Save all group peak tables into one Excel sheet, one below the other.
+    output_path = Path(output_path)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
 
-    title_fmt = workbook.add_format({
-        "bold": True,
-        "align": "center",
-        "valign": "vcenter",
-        "border": 1,
-        "bg_color": "#D9EAD3",
-        "font_size": 13,
-    })
+    with pd.ExcelWriter(output_path, engine="xlsxwriter") as writer:
+        sheet_name = "peaks_periods"
+        start_row = 0
 
-    peaks_fmt = workbook.add_format({
-        "bold": True,
-        "align": "center",
-        "valign": "vcenter",
-        "border": 1,
-        "bg_color": "#EADCF8",
-    })
-
-    periods_fmt = workbook.add_format({
-        "bold": True,
-        "align": "center",
-        "valign": "vcenter",
-        "border": 1,
-        "bg_color": "#C7A1ED",
-    })
-
-    subheader_fmt = workbook.add_format({
-        "bold": True,
-        "align": "center",
-        "valign": "vcenter",
-        "border": 1,
-        "bg_color": "#F3F3F3",
-        "font_size": 8,
-    })
-
-    index_fmt = workbook.add_format({
-        "bold": True,
-        "align": "center",
-        "valign": "vcenter",
-        "border": 1,
-    })
-
-    cell_fmt = workbook.add_format({
-        "align": "center",
-        "valign": "vcenter",
-        "border": 1,
-        "font_size": 10,
-    })
-
-    expanded_parts = []
-    group_sizes = {}
-
-    for col in df.columns:
-        max_len = df[col].apply(
-            lambda x: len(x) if isinstance(x, (list, tuple)) else 1
-        ).max()
-
-        group_sizes[col] = max_len
-        expanded_col = pd.DataFrame(index=df.index)
-
-        for i in range(max_len):
-            expanded_col[(col, i + 1)] = df[col].apply(
-                lambda x: (
-                    x[i]
-                    if isinstance(x, (list, tuple)) and i < len(x)
-                    else ""
-                )
+        for group_name, table in tables.items():
+            table.to_excel(
+                writer,
+                sheet_name=sheet_name,
+                startrow=start_row + 1,
+                startcol=0,
+                index=False,
             )
 
-        expanded_parts.append(expanded_col)
+            workbook = writer.book
+            worksheet = writer.sheets[sheet_name]
 
-    df_excel = pd.concat(expanded_parts, axis=1)
+            group_format = workbook.add_format({
+                "bold": True,
+                "font_size": 16,
+                "align": "center",
+                "valign": "vcenter",
+            })
 
-    worksheet.merge_range(
-        start_row,
-        0,
-        start_row + 1,
-        0,
-        table_title,
-        title_fmt,
-    )
+            first_col_label_format = workbook.add_format({
+                "italic": True,
+            })
 
-    col_idx = 1
-    peaks = True
+            centered_format = workbook.add_format({
+                "align": "center",
+                "valign": "vcenter",
+            })
 
-    for master_label, size in group_sizes.items():
-        first_col = col_idx
-        last_col = col_idx + size - 1
+            peak_header_format = workbook.add_format({
+                "bold": True,
+                "align": "center",
+                "valign": "vcenter",
+            })
 
-        if peaks:
-            sub_h = "peak"
-            master_fmt = peaks_fmt
-        else:
-            sub_h = "period"
-            master_fmt = periods_fmt
+            average_fill_format = workbook.add_format({
+                "bg_color": "#F2DCDB",
+                "align": "center",
+                "valign": "vcenter",
+            })
 
-        peaks = not peaks
+            average_peak_format = workbook.add_format({
+                "bold": True,
+                "bg_color": "#F2DCDB",
+                "align": "center",
+                "valign": "vcenter",
+            })
 
-        worksheet.merge_range(
-            start_row,
-            first_col,
-            start_row,
-            last_col,
-            master_label,
-            master_fmt,
-        )
+            average_label_format = workbook.add_format({
+                "italic": True,
+                "bg_color": "#F2DCDB",
+            })
 
-        for sub_i in range(size):
-            worksheet.write(
-                start_row + 1,
-                first_col + sub_i,
-                sub_h + str(sub_i + 1),
-                subheader_fmt,
+            # Column width = 10 for all used columns
+            last_col = len(table.columns) - 1
+            worksheet.set_column(0, last_col, 10)
+
+            # Group name merged across the table width
+            worksheet.merge_range(
+                start_row,
+                0,
+                start_row,
+                last_col,
+                group_name,
+                group_format,
             )
 
-        col_idx += size
+            header_row = start_row + 1
+            first_data_row = start_row + 2
+            last_data_row = first_data_row + len(table) - 1
 
-    for row_i, index_label in enumerate(df_excel.index):
-        excel_row = start_row + 2 + row_i
-
-        worksheet.write(
-            excel_row,
-            0,
-            index_label.lower(),
-            index_fmt,
-        )
-
-        for col_i, value in enumerate(df_excel.loc[index_label]):
-            if isinstance(value, (int, float)):
-                value = round(value, decimals)
+            # Color "replicate" header in white
+            blank_header_format = workbook.add_format({
+                "font_color": "white",
+            })
 
             worksheet.write(
-                excel_row,
-                col_i + 1,
-                value,
-                cell_fmt,
+                header_row,
+                0,
+                "replicate",
+                blank_header_format,
             )
 
-    worksheet.set_column(0, 0, 18)
-    worksheet.set_column(1, len(df_excel.columns), 12)
+            # Format headers
+            for col_idx, col_name in enumerate(table.columns):
+                if col_idx == 0:
+                    continue
 
-    end_row = start_row + 2 + len(df_excel.index)
+                if str(col_name).startswith("peak"):
+                    worksheet.write(header_row, col_idx, col_name, peak_header_format)
+                else:
+                    worksheet.write(header_row, col_idx, col_name, centered_format)
 
-    for r in range(end_row, end_row + gap_rows):
-        worksheet.set_row(r, 15)
+            # Format table body
+            for row_offset, (_, row) in enumerate(table.iterrows()):
+                excel_row = first_data_row + row_offset
+                is_average_row = str(row["replicate"]).lower() == "average"
 
-    return end_row + gap_rows
+                for col_idx, col_name in enumerate(table.columns):
+                    value = row[col_name]
+
+                    if pd.isna(value):
+                        continue
+
+                    if col_idx == 0:
+                        if is_average_row:
+                            worksheet.write(excel_row, col_idx, value, average_label_format)
+                        else:
+                            worksheet.write(excel_row, col_idx, value, first_col_label_format)
+
+                    else:
+                        if is_average_row:
+                            if str(col_name).startswith("peak"):
+                                worksheet.write(excel_row, col_idx, value, average_peak_format)
+                            else:
+                                worksheet.write(excel_row, col_idx, value, average_fill_format)
+                        else:
+                            worksheet.write(excel_row, col_idx, value, centered_format)
+
+            # Move to next table:
+            # group title row + header row + data rows + empty rows
+            start_row = last_data_row + 1 + empty_rows_between_tables
