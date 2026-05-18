@@ -1,37 +1,37 @@
 from lumi_analysis.core.pipeline import run_lumi_pipeline
 
 
-# =============================================================================
+# ==================================================================================================================== #
 # USER SETTINGS
 # Edit only this section before running the pipeline.
 # Do not change anything below the USER SETTINGS section.
-# =============================================================================
+# ==================================================================================================================== #
 
 config = {
-    # -------------------------------------------------------------------------
+    # ---------------------------------------------------------------------------------------------------------------- #
     # 1. INPUT DATA
     # Paste the path to the folder that contains the Lumi raw CSV files.
     # The folder should contain files such as:
     # 1a_Raw.csv, 1b_Raw.csv, 2a_Raw.csv, etc.
-    # -------------------------------------------------------------------------
+    # ---------------------------------------------------------------------------------------------------------------- #
     "input_folder": (
         r"C:/Users/yuval/OneDrive/Desktop/Lumi/"
         r"12.4.26/DM3_Lumi1 Allicin-Dex/Allicin 3 25uM-Dex/Analysis/Analysis/"
     ),
 
-    # -------------------------------------------------------------------------
+    # ---------------------------------------------------------------------------------------------------------------- #
     # 2. OUTPUT FOLDER
     # Choose the name/path of the folder where processed results will be saved.
     # If the folder does not exist, it will be created automatically.
-    # -------------------------------------------------------------------------
+    # ---------------------------------------------------------------------------------------------------------------- #
     "output_folder": "test_output",
 
-    # -------------------------------------------------------------------------
+    # ---------------------------------------------------------------------------------------------------------------- #
     # 3. GROUPING
     # How many raw files belong to each sample/group?
     # Example:
     # If each biological sample has 5 replicate files, use 5.
-    # -------------------------------------------------------------------------
+    # ---------------------------------------------------------------------------------------------------------------- #
     "replicates_per_group": 3,
 
     # Optional group names.
@@ -51,7 +51,7 @@ config = {
     # True  = analyse leftover files as an additional group named "Extra".
     "include_extra_group": False,
 
-    # -------------------------------------------------------------------------
+    # ---------------------------------------------------------------------------------------------------------------- #
     # 4. ANALYSIS SETTINGS
     # noise_max:
     #   The minimum counts/sec value that marks the beginning of the real signal.
@@ -61,70 +61,66 @@ config = {
     # remove_noise:
     #   True  = subtract the average pre-sample noise from the signal.
     #   False = keep the signal without subtracting that background.
-    # -------------------------------------------------------------------------
+    # ---------------------------------------------------------------------------------------------------------------- #
     "noise_max": 25,
     "remove_noise": True,
 
-    # -------------------------------------------------------------------------
+    # ---------------------------------------------------------------------------------------------------------------- #
     # 5. FILE SETTINGS
-    # Usually these should not be changed.
-    # Change only if the Lumi output files use different names.
-    # -------------------------------------------------------------------------
+    # Usually these should NOT be changed. Change only if the Lumi output files use different names.
+    # ---------------------------------------------------------------------------------------------------------------- #
     "extension": ".csv",
     "suffix_to_remove": "_Raw",
     "file_suffix": "_Raw.csv",
 
-    # -------------------------------------------------------------------------
+    # ---------------------------------------------------------------------------------------------------------------- #
     # 6. SAVING
     # True  = save processed files to output_folder.
     # False = run analysis without saving files.
-    # -------------------------------------------------------------------------
+    # ---------------------------------------------------------------------------------------------------------------- #
     "save_file": True,
 
-    # -------------------------------------------------------------------------
+    # ---------------------------------------------------------------------------------------------------------------- #
     # 7. DATA LENGTH / TAIL CUTTING
     # Optional: limit analysis to the first N rows/hours/days after alignment.
-    # Use only one of max_rows, max_hours, max_days.
-    # Leave all as None to keep the full data.
-    # -------------------------------------------------------------------------
+    # Use only one of max_rows, max_hours, max_days. Leave all as None to keep the full data.
+    # ---------------------------------------------------------------------------------------------------------------- #
     "interval_minutes": 10,
     "max_rows": None,
     "max_hours": None,
     "max_days": 7,
 
-    # -------------------------------------------------------------------------
+    # ---------------------------------------------------------------------------------------------------------------- #
     # 8. PLOTTING SETTINGS
     # These settings control raw-data plots.
     # Global settings apply to all groups unless overridden in plot_group_settings.
-    # -------------------------------------------------------------------------
+    # ---------------------------------------------------------------------------------------------------------------- #
 
     # True  = create and save raw-data plots.
     # False = do not create raw-data plots.
     "plot_raw_data": True,
 
-    # Plot display style.
-    # Options:
+    # Plot display style - options:
     # "points"      = plot data as points only
     # "line"        = plot data as continuous lines
     # "points+line" = plot points connected by lines
     "plot_style": "points",
 
-    # Y-axis limit.
+    # Y-axis limit:
     # None       = automatic y-axis scaling.
     # 500        = y-axis from 0 to 500.
     # (-100,500) = y-axis from -100 to 500.
     "y_limit": None,
 
-    # Figure size in inches: (width, height).
+    # Figure size in inches: (width, height)
     "figsize": (9, 5),
 
-    # Optional text shown in the top-right corner of the plot.
-    # Use None for no description.
+    # Optional text shown in the top-right corner of the plot:
+    # Use None for no description or write your text in "...".
     "description": None,
 
-    # Replicate control.
-    # None = use all replicate columns automatically.
-    #
+    # Replicate control:
+    # None = show in the figure and use for the mean all replicate columns automatically.
     # mean_replicate_cols controls which replicates are included in the average.
     # visible_replicate_cols controls which replicates are shown on the plot.
     #
@@ -132,20 +128,9 @@ config = {
     # "mean_replicate_cols": ["c i", "c iii"],
     # "visible_replicate_cols": [],
     #
-    # This would calculate the average from c i and c iii,
-    # but show only the average curve/points.
+    # This would calculate the average from c i and c iii, but show only the average curve/points.
     "mean_replicate_cols": None,
     "visible_replicate_cols": None,
-
-    # True  = recalculate the average from mean_replicate_cols.
-    # False = use the existing counts/sec (avg) column.
-    "recompute_mean": True,
-
-    # Plot display behavior.
-    # show_plots=False avoids plt.show(), which is safer in PyCharm.
-    # close_plots=True closes figures after saving to avoid memory buildup.
-    "show_plots": False,
-    "close_plots": True,
 
     # CT shift.
     # This changes the CT values used in saved condensed data and plots.
@@ -157,23 +142,11 @@ config = {
     # even if the first data point starts at shifted CT such as 6.
     "x_axis_start": 0,
 
-    # Optional group-specific overrides.
-    # Use this when different groups need different y-limits, sizes, styles, etc.
-    # Any value written here overrides the global value above only for that group.
-    "plot_group_settings": {
-        # Example:
-        # "control": {
-        #     "y_limit": 500,
-        #     "figsize": (10, 5),
-        #     "average_markersize": 4,
-        # },
-    },
-
-    # -------------------------------------------------------------------------
+    # ---------------------------------------------------------------------------------------------------------------- #
     # 9. PEAK SETTINGS
     # These settings control peak markers on raw-data plots.
-    # -------------------------------------------------------------------------
-
+    # Global settings apply to all groups unless overridden in plot_group_settings.
+    # ---------------------------------------------------------------------------------------------------------------- #
     # True  = detect and mark peaks on raw-data plots.
     # False = do not show peaks.
     "plot_peaks": True,
@@ -184,36 +157,52 @@ config = {
     # Example: ["c i", "c iii"]
     "peaks_to_show": None,
 
-    # Which replicate peaks should also get text labels.
-    # None or [] = no replicate peak text labels.
+    # Which replicate should also get text labels next to their peaks:
+    # None or [] = no replicate has peak text labels.
     # Example: ["c iii"]
-    "peaks_to_show_txt": [],
+    "peaks_to_show_txt": None,
 
     # Average peak visibility.
     "show_average_peaks": True,
     "show_average_peaks_txt": True,
 
-    # Peak detection settings.
-    "min_peak_distance_hours": 20,
-    "peak_prominence": None,
+    # ---------------------------------------------------------------------------------------------------------------- #
+    # Optional group-specific overrides.
+    # Use this when different groups need different plot settings.
+    # Any value written here overrides the global value above only for that group.
+    #
+    # You can override regular plot settings AND peak settings here.
+    #
+    # Example:
+    # "plot_group_settings": {
+    #     "control": {
+    #         "y_limit": 500,
+    #         "figsize": (10, 5),
+    #
+    #         # Peak overrides for this group only:
+    #         "plot_peaks": True,
+    #         "peaks_to_show": ["c i", "c iii"],
+    #         "peaks_to_show_txt": ["c iii"],
+    #         "show_average_peaks": True,
+    #         "show_average_peaks_txt": True,
+    #         "min_peak_distance_hours": 20,
+    #         "peak_prominence": None,
+    #     },
+    # },
 
-    # Peak marker appearance.
-    "peak_marker": "x",
-    "peak_markersize": 7,
-    "peak_markeredgewidth": 1.5,
-
-    # Peak text appearance/location.
-    "peak_txt_dx": 2,
-    "peak_txt_dy": 0,
-    "peak_txt_fontsize": 8,
+    # Optional group-specific overrides.
+    # Use this when different groups need different y-limits, sizes, styles, peaks, etc.
+    # Any value written here overrides the global value above only for that group.
+    "plot_group_settings": {
+    },
 
 }
 
 
-# =============================================================================
+# ==================================================================================================================== #
 # RUN PIPELINE
 # Do not edit below this line unless you are changing the code itself.
-# =============================================================================
+# ==================================================================================================================== #
 
 if __name__ == "__main__":
     result = run_lumi_pipeline(config)

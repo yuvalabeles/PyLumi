@@ -342,7 +342,7 @@ def plot_raw_replicates(
     # Figure styling
     # -------------------------------------------------------------------------
     if title is not None:
-        ax.set_title(title, pad=20, fontsize=18)
+        ax.set_title(str(title).title(), pad=20, fontsize=18, fontweight="bold")
 
     format_lumi_raw_axis(
         ax,
@@ -364,7 +364,7 @@ def plot_raw_replicates(
         ncol=min(legend_items_count, 6),
         frameon=False,
         fontsize=13,
-        markerscale=3,
+        markerscale=5,
     )
 
     add_figure_border(fig)
