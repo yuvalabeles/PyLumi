@@ -12,7 +12,7 @@ from pathlib import Path
 import xlsxwriter
 
 
-OUTPUT_FILE = "settings.xlsx"
+OUTPUT_FILE = "../settings.xlsx"
 
 
 DISPLAY_NAMES = {
