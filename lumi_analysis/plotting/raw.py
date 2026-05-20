@@ -191,9 +191,21 @@ def plot_raw_replicates(
 
     if mean_replicate_cols is None:
         mean_replicate_cols = all_replicate_cols
+    else:
+        replicates_to_keep = [
+            col for col in all_replicate_cols
+            if col not in mean_replicate_cols
+        ]
+        mean_replicate_cols = replicates_to_keep
 
     if visible_replicate_cols is None:
         visible_replicate_cols = all_replicate_cols
+    else:
+        replicates_to_show = [
+            col for col in all_replicate_cols
+            if col not in visible_replicate_cols
+        ]
+        visible_replicate_cols = replicates_to_show
 
     if plot_peaks:
         if peaks_to_show is None:

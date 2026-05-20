@@ -45,10 +45,10 @@ from scripts.load_settings import load_settings
 # ==================================================================================================================== #
 # USER SETTINGS
 # Edit only the xlsx settings file before running the pipeline.
-# Do not change anything within this, or any other code.
+# Do not change anything within this, or any other code files.
 # ==================================================================================================================== #
 
-config = load_settings("settings.xlsx")
+config = load_settings("../settings.xlsx")
 
 if __name__ == "__main__":
     result = run_lumi_pipeline(config)

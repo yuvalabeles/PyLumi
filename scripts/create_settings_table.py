@@ -20,43 +20,33 @@ DISPLAY_NAMES = {
     "output_folder": "Output folder",
     "replicates_per_group": "Replicates per group",
     "sample_tags": "Sample names",
-    "include_extra_group": "Include extra group",
-    "noise_max": "Noise threshold",
+    "include_extra_group": "Include all files",
+    "noise_max": "Maximum background noise",
     "remove_noise": "Remove background noise",
     "extension": "File extension",
     "suffix_to_remove": "Suffix to remove",
     "file_suffix": "Raw file suffix",
     "save_file": "Save processed files",
-    "interval_minutes": "Sampling interval",
-    "max_rows": "Maximum rows",
-    "max_hours": "Maximum hours",
+    "interval_minutes": "Length of Lumi's interval",
     "max_days": "Maximum days",
-    "plot_raw_data": "Create raw-data plots",
-    "plot_style": "Plot style",
-    "y_limit": "Y-axis limit",
-    "figsize": "Figure size",
+    "plot_raw_data": "Create plots of the data",
+    "plot_style": "Choose plot style",
+    "y_limit": "Y-axis upper limit",
     "description": "Plot description",
-    "mean_replicate_cols": "Replicates used for mean",
-    "visible_replicate_cols": "Replicates shown on plot",
     "ct_start_hour": "CT start hour",
-    "x_axis_start": "X-axis start",
+    "x_axis_start": "X-axis start (only changes the plot)",
     "plot_peaks": "Show peaks",
-    "peaks_to_show": "Replicate peaks to show",
-    "peaks_to_show_txt": "Replicate peak labels",
     "show_average_peaks": "Show average peaks",
     "show_average_peaks_txt": "Show average peak labels",
-    "peak_txt_dy": "Peak label vertical offset",
     "save_peak_tables": "Save peak/period tables",
     "peak_table_decimals": "Peak table decimals",
-    "peak_table_period_as_text": "Write periods as text",
-    "include_average_in_peak_table": "Include average in peak table",
     "plot_group_settings": "Group-specific plot settings",
     "override_group_names": "Group names",
     "override_y_limit": "Y-axis limit",
     "override_description": "Plot description",
     "override_peak_txt_dy": "Peak label vertical offset",
-    "override_mean_replicate_cols": "Replicates used for mean",
-    "override_visible_replicate_cols": "Replicates shown on plot",
+    "override_mean_replicate_cols": "Replicates to disable",
+    "override_visible_replicate_cols": "Replicates to hide",
 }
 
 
@@ -202,24 +192,6 @@ SECTIONS = [
                 "description": "Sampling interval in minutes.",
             },
             {
-                "name": "max_rows",
-                "default": "None",
-                "allowed": "Positive integer, or None.",
-                "description": (
-                    "Optional: limit analysis to the first N rows after alignment. "
-                    "Use only one of max_rows, max_hours, max_days. Leave all as None to keep the full data."
-                ),
-            },
-            {
-                "name": "max_hours",
-                "default": "None",
-                "allowed": "Positive number, or None.",
-                "description": (
-                    "Optional: limit analysis to the first N hours after alignment. "
-                    "Use only one of max_rows, max_hours, max_days. Leave all as None to keep the full data."
-                ),
-            },
-            {
                 "name": "max_days",
                 "default": 7,
                 "allowed": "Positive number, or None.",
@@ -264,37 +236,12 @@ SECTIONS = [
                 ),
             },
             {
-                "name": "figsize",
-                "default": "(9, 5)",
-                "allowed": "Tuple of two numbers: (width, height). \nExample: (9, 5)",
-                "description": "Figure size in inches.",
-            },
-            {
                 "name": "description",
                 "default": "Control (females 13.4.26)",
                 "allowed": "Text, or None.",
                 "description": (
                     "Optional text shown in the top-right corner of the plot. "
                     "Use None for no description or write the desired text."
-                ),
-            },
-            {
-                "name": "mean_replicate_cols",
-                "default": "None",
-                "allowed": 'None, empty list [], or list of replicate names. \nExample: ["c i", "c iii"]',
-                "description": (
-                    "Controls which replicates are included in the average. "
-                    "None = use all replicate columns automatically."
-                ),
-            },
-            {
-                "name": "visible_replicate_cols",
-                "default": "None",
-                "allowed": 'None, empty list [], or list of replicate names. \nExample: ["c i", "c iii"]',
-                "description": (
-                    "Controls which replicates are shown on the plot. "
-                    "None = show all replicate columns automatically. "
-                    "An empty list can be used to show only the average curve/points."
                 ),
             },
             {
@@ -331,24 +278,6 @@ SECTIONS = [
                 "validation": ["True", "False"],
             },
             {
-                "name": "peaks_to_show",
-                "default": "None",
-                "allowed": 'None, empty list [], or list of replicate names. \nExample: ["c i", "c iii"]',
-                "description": (
-                    "Which replicate peaks to show. None = show peaks for all visible replicates. "
-                    "[] = show no replicate peaks."
-                ),
-            },
-            {
-                "name": "peaks_to_show_txt",
-                "default": "None",
-                "allowed": 'None, empty list [], or list of replicate names. \nExample: ["c iii"]',
-                "description": (
-                    "Which replicate should also get text labels next to their peaks. "
-                    "None or [] = no replicate has peak text labels."
-                ),
-            },
-            {
                 "name": "show_average_peaks",
                 "default": True,
                 "allowed": "True / False",
@@ -361,12 +290,6 @@ SECTIONS = [
                 "allowed": "True / False",
                 "description": "Whether to show text labels next to average-signal peaks.",
                 "validation": ["True", "False"],
-            },
-            {
-                "name": "peak_txt_dy",
-                "default": 20,
-                "allowed": "Number. \nExample: 20",
-                "description": "Vertical offset for peak text labels.",
             },
         ],
     },
@@ -385,23 +308,6 @@ SECTIONS = [
                 "default": 2,
                 "allowed": "Non-negative integer. \nExample: 2",
                 "description": "Number of decimals in peak and period values.",
-            },
-            {
-                "name": "peak_table_period_as_text",
-                "default": True,
-                "allowed": "True / False",
-                "description": (
-                    "True = period values are written as text like \"(24.17 h)\". "
-                    "False = period values are saved as numeric values."
-                ),
-                "validation": ["True", "False"],
-            },
-            {
-                "name": "include_average_in_peak_table",
-                "default": True,
-                "allowed": "True / False",
-                "description": "Whether to include the average signal as an additional row.",
-                "validation": ["True", "False"],
             },
         ],
     },
