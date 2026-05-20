@@ -39,14 +39,16 @@ def create_signal_peaks_periods_row(
     periods = []
 
     for i, peak_time in enumerate(peak_times, start=1):
-        row[f"peak {i}"] = round(float(peak_time), decimals)
+        # row[f"peak {i}"] = round(float(peak_time), decimals)
+        peak = round(float(peak_time), decimals)
+        row[f"peak {i}"] = f"({peak})"
 
         if i < len(peak_times):
             period = float(peak_times[i] - peak_times[i - 1])
             periods.append(period)
 
             if period_as_text:
-                row[f"Δ {i}-{i + 1}"] = f"({period:.{decimals}f} h)"
+                row[f"Δ {i}-{i + 1}"] = f"{period:.{decimals}f} h"
             else:
                 row[f"Δ {i}-{i + 1}"] = round(period, decimals)
 

@@ -175,13 +175,22 @@ def save_peaks_periods_tables_to_excel(
             centered_format = workbook.add_format({
                 "align": "center",
                 "valign": "vcenter",
+                "left": 1,
+                "right": 1
             })
 
             peak_header_format = workbook.add_format({
-                "bold": True,
                 "align": "center",
                 "valign": "vcenter",
                 "border": 1
+            })
+
+            period_header_format = workbook.add_format({
+                "bold": True,
+                "bg_color": "#F9EEED",
+                "align": "center",
+                "valign": "vcenter",
+                "bottom": 1
             })
 
             average_period_header_format = workbook.add_format({
@@ -199,12 +208,18 @@ def save_peaks_periods_tables_to_excel(
                 "border": 1
             })
 
-            average_peak_format = workbook.add_format({
+            avg_row_period_format = workbook.add_format({
                 "bold": True,
-                "bg_color": "#F2DCDB",
+                "bg_color": "#F9EEED",
                 "align": "center",
                 "valign": "vcenter",
                 "border": 1
+            })
+
+            period_format = workbook.add_format({
+                "bg_color": "#F9EEED",
+                "align": "center",
+                "valign": "vcenter",
             })
 
             average_label_format = workbook.add_format({
@@ -267,7 +282,8 @@ def save_peaks_periods_tables_to_excel(
 
                 elif str(col_name).startswith("peak"):
                     worksheet.write(header_row, col_idx, col_name, peak_header_format)
-
+                elif str(col_name).startswith("Δ"):
+                    worksheet.write(header_row, col_idx, col_name, period_header_format)
                 else:
                     worksheet.write(header_row, col_idx, col_name, centered_format)
 
@@ -301,12 +317,15 @@ def save_peaks_periods_tables_to_excel(
 
                     else:
                         if is_average_row:
-                            if str(col_name).startswith("peak"):
-                                worksheet.write(excel_row, col_idx, value, average_peak_format)
+                            if str(col_name).startswith("Δ"):
+                                worksheet.write(excel_row, col_idx, value, avg_row_period_format)
                             else:
                                 worksheet.write(excel_row, col_idx, value, average_fill_format)
                         else:
-                            worksheet.write(excel_row, col_idx, value, centered_format)
+                            if str(col_name).startswith("Δ"):
+                                worksheet.write(excel_row, col_idx, value, period_format)
+                            else:
+                                worksheet.write(excel_row, col_idx, value, centered_format)
 
             # Move to next table:
             # group title row + header row + data rows + empty rows
