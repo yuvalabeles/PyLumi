@@ -78,12 +78,6 @@ def plot_pipeline_results(config, analysis_result):
     for group_name, group_result in analysis_result["group_results"].items():
         group_df = group_result["full_df"]
 
-        print("replicate_display_mode from config:", config.get("replicate_display_mode"))
-        print(
-            "replicate_display_mode for group:",
-            get_group_plot_setting(config, group_name, "replicate_display_mode", "replicates_and_mean")
-        )
-
         plot_raw_replicates(
             group_df,
             title=f"{group_name}",
