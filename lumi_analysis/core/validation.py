@@ -41,6 +41,6 @@ def assert_interval_jumps(df_no_noise, filenames, file_num):
             print(f"completed missing interval on row {insert_index}, in file {filenames[file_num]}_Raw.")
         else:
             print("More than one consecutive interval missing.")
-            return
+            # return
 
     return df_no_noise

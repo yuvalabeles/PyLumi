@@ -33,6 +33,7 @@ def run_analysis(
     max_days=None,
     interval_minutes=10,
     ct_start_hour=0,
+    replicates_per_group=None,
 ):
     full_dfs = []
     group_results = {}
@@ -40,8 +41,7 @@ def run_analysis(
     if not isinstance(groups, dict):
         raise TypeError("groups must be a dictionary: dict[str, list[str]]")
 
-    if group_labels is None:
-        group_labels = list(groups.keys())
+    group_labels = list(groups.keys())
 
     for group_name, file_names in groups.items():
         print(f"[*] Analysing group: {group_name}, from: {file_names}")
@@ -83,6 +83,7 @@ def run_analysis(
             condensed_df,
             "Data - complete",
             group_labels=group_labels,
+            replicates_per_group=replicates_per_group,
             output_folder=output_folder,
         )
 

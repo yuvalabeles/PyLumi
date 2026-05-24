@@ -21,15 +21,15 @@ def save_group_data(
     excel=True,
     col_width=12,
     group_labels=None,
+    replicates_per_group=None,
     output_folder=None,
 ):
     folder_path = ensure_output_folder(output_folder)
 
-    # Save dataframe as Excel.
     if excel:
         file_path = folder_path / f"{filename}.xlsx"
 
-        col_num = len(list(df.columns))
+        col_num = len(df.columns)
 
         with pd.ExcelWriter(file_path, engine="xlsxwriter") as writer:
             df.to_excel(
@@ -70,61 +70,90 @@ def save_group_data(
                 "align": "center",
             })
 
-            # Set column widths.
+            if group_labels is None:
+                raise ValueError(
+                    "group_labels must be provided when saving formatted Excel group data."
+                )
+
+            if replicates_per_group is None:
+                raise ValueError(
+                    "replicates_per_group must be provided when saving formatted Excel group data."
+                )
+
+            if replicates_per_group <= 0:
+                raise ValueError(
+                    "replicates_per_group must be greater than 0."
+                )
+
+            data_start_col = 2
+
+            visible_cols_per_group = replicates_per_group + 1
+            number_of_groups = len(group_labels)
+            spaces_between_groups = number_of_groups - 1
+
+            expected_data_cols_with_spaces = (
+                number_of_groups * visible_cols_per_group
+                + spaces_between_groups
+            )
+
+            expected_total_cols = data_start_col + expected_data_cols_with_spaces
+
+            if expected_total_cols > col_num:
+                raise ValueError(
+                    f"Expected at least {expected_total_cols} columns, "
+                    f"but dataframe has only {col_num}. "
+                    f"replicates_per_group={replicates_per_group}, "
+                    f"group_labels={number_of_groups}."
+                )
+
             worksheet.set_column(0, 0, col_width, red_text)
             worksheet.set_column(1, 1, col_width - 2, index_format)
-            worksheet.set_column(2, col_num, col_width)
+            worksheet.set_column(2, col_num - 1, col_width)
 
-            col_cnt = 0
-            label_id = 0
+            for label_id, group_label in enumerate(group_labels):
+                group_start_col = (
+                    data_start_col
+                    + label_id * (visible_cols_per_group + 1)
+                )
 
-            for col in range(2, col_num):
-                if col_cnt == 5:
+                group_end_col = group_start_col + visible_cols_per_group - 1
+                mean_col = group_end_col
+
+                worksheet.merge_range(
+                    0,
+                    group_start_col,
+                    0,
+                    group_end_col,
+                    group_label,
+                    group_header_format,
+                )
+
+                for col in range(group_start_col, group_end_col + 1):
                     value = str(df.columns[col])
 
-                    worksheet.write(
-                        1,
-                        col,
-                        value,
-                        d_green_format,
-                    )
+                    if col == mean_col:
+                        worksheet.write(
+                            1,
+                            col,
+                            value,
+                            d_green_format,
+                        )
 
-                    worksheet.set_column(
-                        col,
-                        col,
-                        col_width + 2,
-                        d_green_format,
-                    )
+                        worksheet.set_column(
+                            col,
+                            col,
+                            col_width + 2,
+                            d_green_format,
+                        )
 
-                    # Merge every 5 columns in first row.
-                    worksheet.merge_range(
-                        0,
-                        col - 5,
-                        0,
-                        col,
-                        group_labels[label_id],
-                        group_header_format,
-                    )
+                    else:
+                        worksheet.write(
+                            1,
+                            col,
+                            value,
+                            green_format,
+                        )
 
-                    label_id += 1
-
-                elif col_cnt == 6:
-                    col_cnt = 0
-                    continue
-
-                else:
-                    value = str(df.columns[col])
-
-                    worksheet.write(
-                        1,
-                        col,
-                        value,
-                        green_format,
-                    )
-
-                col_cnt += 1
-
-    # Save dataframe as CSV.
     else:
         group_folder = folder_path / "Data (per group)"
         group_folder.mkdir(exist_ok=True)
@@ -139,7 +168,6 @@ def save_peaks_periods_tables_to_excel(
     output_path,
     empty_rows_between_tables=2,
 ):
-    # Save all group peak tables into one Excel sheet, one below the other.
     output_path = Path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -235,11 +263,9 @@ def save_peaks_periods_tables_to_excel(
                 "border": 1
             })
 
-            # Column width = 10 for all used columns
             last_col = len(table.columns)
             worksheet.set_column(0, last_col, 10)
 
-            # Group name merged across the table width
             worksheet.merge_range(
                 start_row,
                 0,
@@ -253,7 +279,6 @@ def save_peaks_periods_tables_to_excel(
             first_data_row = start_row + 2
             last_data_row = first_data_row + len(table) - 1
 
-            # Color "replicate" header in white
             blank_header_format = workbook.add_format({
                 "font_color": "white",
             })
@@ -265,7 +290,6 @@ def save_peaks_periods_tables_to_excel(
                 blank_header_format,
             )
 
-            # Format headers
             for col_idx, col_name in enumerate(table.columns):
                 if col_idx == 0:
                     continue
@@ -282,12 +306,13 @@ def save_peaks_periods_tables_to_excel(
 
                 elif str(col_name).startswith("peak"):
                     worksheet.write(header_row, col_idx, col_name, peak_header_format)
+
                 elif str(col_name).startswith("Δ"):
                     worksheet.write(header_row, col_idx, col_name, period_header_format)
+
                 else:
                     worksheet.write(header_row, col_idx, col_name, centered_format)
 
-            # Format table body
             for row_offset, (_, row) in enumerate(table.iterrows()):
                 excel_row = first_data_row + row_offset
                 is_average_row = str(row["replicate"]).lower() == "average"
@@ -327,6 +352,4 @@ def save_peaks_periods_tables_to_excel(
                             else:
                                 worksheet.write(excel_row, col_idx, value, centered_format)
 
-            # Move to next table:
-            # group title row + header row + data rows + empty rows
             start_row = last_data_row + 1 + empty_rows_between_tables

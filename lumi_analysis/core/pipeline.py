@@ -141,6 +141,7 @@ def run_lumi_pipeline(config):
     analysis_result = run_analysis(
         input_folder=config["input_folder"],
         groups=groups,
+        replicates_per_group=config["replicates_per_group"],
         group_labels=config.get("group_labels"),
         save_file=config.get("save_file", True),
         suffix=config.get("file_suffix", "_Raw.csv"),

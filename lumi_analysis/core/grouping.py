@@ -50,23 +50,25 @@ def create_fixed_size_groups(
 
     groups = {}
 
-    expected_group_count = len(sample_tags) if sample_tags is not None else None
-
     full_group_count = len(file_names) // replicates_per_group
+    leftover_count = len(file_names) % replicates_per_group
 
     if sample_tags is None:
-        group_count_to_create = full_group_count
-    else:
-        group_count_to_create = min(expected_group_count, full_group_count)
+        sample_tags = []
 
-    for i in range(group_count_to_create):
+    for i in range(full_group_count):
         start = i * replicates_per_group
         end = start + replicates_per_group
 
-        group_name = sample_tags[i] if sample_tags is not None else f"Group_{i + 1}"
+        if i < len(sample_tags):
+            group_name = sample_tags[i]
+        else:
+            unlabeled_index = i - len(sample_tags) + 1
+            group_name = f"Unlabeled {unlabeled_index}"
+
         groups[group_name] = file_names[start:end]
 
-    used_files_count = group_count_to_create * replicates_per_group
+    used_files_count = full_group_count * replicates_per_group
     extra_files = file_names[used_files_count:]
 
     if extra_files and include_extra_group:
@@ -77,7 +79,7 @@ def create_fixed_size_groups(
         for file_name in extra_files:
             print(f"    {file_name}")
 
-    if sample_tags is not None and len(sample_tags) > full_group_count:
+    if len(sample_tags) > full_group_count:
         missing_tags = sample_tags[full_group_count:]
 
         print("\nWarning: Some sample tags did not receive any files:")
