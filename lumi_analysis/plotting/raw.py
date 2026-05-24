@@ -118,6 +118,7 @@ def plot_raw_replicates(
     df,
     mean_replicate_cols=None,
     visible_replicate_cols=None,
+    replicate_display_mode="replicates_and_mean",
     mean_col=LUMI_AVERAGE_COLUMN,
     recompute_mean=True,
     time_col=None,
@@ -156,36 +157,23 @@ def plot_raw_replicates(
     """
     Plot raw Lumi data from a pipeline full_df.
 
-    Expected dataframe structure:
-    Date | Time (hr:min) | Time (days) | replicate columns... | counts/sec (avg)
-
-    mean_replicate_cols:
-        Replicates included in average calculation.
-
-    visible_replicate_cols:
-        Replicates shown on the plot.
-
-    peaks_to_show:
-        Replicate columns for which peak X markers should be shown.
-        None = show peaks for all visible replicates when plot_peaks=True.
-
-    peaks_to_show_txt:
-        Replicate columns for which peak text labels should be shown.
-        None = no replicate peak text labels.
-
-    show_average_peaks:
-        Whether to show peak X markers for the recalculated average signal.
-
-    show_average_peaks_txt:
-        Whether to show peak text labels for the average signal.
-
-    start_ct:
-        CT value assigned to the first row.
-
-    x_axis_start:
-        Left x-axis limit. Usually 0, so shifted CT data can still be shown
-        on a plot whose axis visually starts at 0.
+    replicate_display_mode:
+        "replicates_and_mean" = show visible replicates and the average.
+        "mean_only" = show only the average.
+        "replicates_only" = show only visible replicates, without the average.
     """
+
+    allowed_modes = [
+        "replicates_and_mean",
+        "mean_only",
+        "replicates_only",
+    ]
+
+    if replicate_display_mode not in allowed_modes:
+        raise ValueError(
+            f"Invalid replicate_display_mode: {replicate_display_mode}. "
+            f"Allowed values: {allowed_modes}"
+        )
 
     all_replicate_cols = get_lumi_replicate_columns(df, mean_col=mean_col)
 
@@ -206,6 +194,9 @@ def plot_raw_replicates(
             if col not in visible_replicate_cols
         ]
         visible_replicate_cols = replicates_to_show
+
+    if replicate_display_mode == "mean_only":
+        visible_replicate_cols = []
 
     if plot_peaks:
         if peaks_to_show is None:
@@ -317,38 +308,39 @@ def plot_raw_replicates(
     # -------------------------------------------------------------------------
     # Plot average
     # -------------------------------------------------------------------------
-    average_line = plot_signal(
-        ax=ax,
-        time=time,
-        y=average_y,
-        label=average_label,
-        plot_style=plot_style,
-        color=average_color,
-        markersize=average_markersize,
-        linewidth=average_linewidth,
-        alpha=average_alpha,
-        zorder=5,
-    )
-
-    if plot_peaks and show_average_peaks:
-        average_peak_color = average_line.get_color()
-
-        plot_peaks_for_signal(
+    if replicate_display_mode != "replicates_only":
+        average_line = plot_signal(
             ax=ax,
             time=time,
-            signal=average_y,
-            color=average_peak_color,
-            show_text=show_average_peaks_txt,
-            min_peak_distance_hours=min_peak_distance_hours,
-            prominence=peak_prominence,
-            marker=peak_marker,
-            markersize=peak_markersize,
-            markeredgewidth=peak_markeredgewidth,
-            text_dx=peak_txt_dx,
-            text_dy=peak_txt_dy,
-            text_fontsize=peak_txt_fontsize,
-            zorder=7,
+            y=average_y,
+            label=average_label,
+            plot_style=plot_style,
+            color=average_color,
+            markersize=average_markersize,
+            linewidth=average_linewidth,
+            alpha=average_alpha,
+            zorder=5,
         )
+
+        if plot_peaks and show_average_peaks:
+            average_peak_color = average_line.get_color()
+
+            plot_peaks_for_signal(
+                ax=ax,
+                time=time,
+                signal=average_y,
+                color=average_peak_color,
+                show_text=show_average_peaks_txt,
+                min_peak_distance_hours=min_peak_distance_hours,
+                prominence=peak_prominence,
+                marker=peak_marker,
+                markersize=peak_markersize,
+                markeredgewidth=peak_markeredgewidth,
+                text_dx=peak_txt_dx,
+                text_dy=peak_txt_dy,
+                text_fontsize=peak_txt_fontsize,
+                zorder=7,
+            )
 
     # -------------------------------------------------------------------------
     # Figure styling
@@ -368,16 +360,20 @@ def plot_raw_replicates(
         else:
             ax.set_ylim(0, y_limit)
 
-    legend_items_count = len(visible_replicate_cols) + 1
+    legend_items_count = len(visible_replicate_cols)
 
-    ax.legend(
-        loc="upper center",
-        bbox_to_anchor=(0.5, -0.18),
-        ncol=min(legend_items_count, 6),
-        frameon=False,
-        fontsize=13,
-        markerscale=5,
-    )
+    if replicate_display_mode != "replicates_only":
+        legend_items_count += 1
+
+    if legend_items_count > 0:
+        ax.legend(
+            loc="upper center",
+            bbox_to_anchor=(0.5, -0.18),
+            ncol=min(legend_items_count, 6),
+            frameon=False,
+            fontsize=13,
+            markerscale=5,
+        )
 
     add_figure_border(fig)
 

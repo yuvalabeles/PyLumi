@@ -30,6 +30,7 @@ DISPLAY_NAMES = {
     "interval_minutes": "Length of Lumi's interval",
     "max_days": "Maximum days",
     "plot_raw_data": "Create plots of the data",
+    "replicate_display_mode": "Replicate display mode",
     "plot_style": "Choose plot style",
     "y_limit": "Y-axis upper limit",
     "description": "Plot description",
@@ -216,6 +217,22 @@ SECTIONS = [
                 "validation": ["True", "False"],
             },
             {
+                "name": "replicate_display_mode",
+                "default": "replicates_and_mean",
+                "allowed": "replicates_and_mean / mean_only / replicates_only",
+                "description": (
+                    "Choose what to display on the raw-data plots. "
+                    "replicates_and_mean = show both replicates and the average signal. "
+                    "mean_only = show only the average signal. "
+                    "replicates_only = show only the replicate signals, without the average."
+                ),
+                "validation": [
+                    "replicates_and_mean",
+                    "mean_only",
+                    "replicates_only",
+                ],
+            },
+            {
                 "name": "plot_style",
                 "default": "line",
                 "allowed": "points / line / points+line",
@@ -370,13 +387,11 @@ def create_settings_template(output_path=OUTPUT_FILE):
     workbook = xlsxwriter.Workbook(output_path)
     worksheet = workbook.add_worksheet("Settings")
 
-    # Workbook formats
     title_format = workbook.add_format({
         "bold": True,
         "font_size": 16,
         "font_color": "white",
         "bg_color": "white",
-        # "align": "center",
         "valign": "vcenter",
         "border": 1,
         "locked": True,
@@ -471,10 +486,8 @@ def create_settings_template(output_path=OUTPUT_FILE):
         "locked": False,
         "font_size": 15,
         "bold": True,
-
     })
 
-    # Column setup
     headers = ["Section", "Setting", "Value", "Possible Values", "Description", "Config Key"]
     worksheet.write(0, 0, headers[0], header_section_format)
     worksheet.write(0, 1, headers[1], header_locked_format)
@@ -493,7 +506,6 @@ def create_settings_template(output_path=OUTPUT_FILE):
     row = 1
 
     for section in SECTIONS:
-        # Blank white row before each section.
         worksheet.merge_range(row, 0, row, 5, "", title_format)
         worksheet.set_row(row, 20)
         row += 1
@@ -532,17 +544,13 @@ def create_settings_template(output_path=OUTPUT_FILE):
                     "error_message": "Please choose one of the allowed values.",
                 })
 
-            # worksheet.set_row(row, 70)
             row += 1
 
-    # Make it clear that only the value column should be edited.
     worksheet.write_comment(
         "C1",
         "Edit only this column. The other columns are locked and are meant as documentation."
     )
 
-    # Protect the worksheet so only unlocked cells can be edited.
-    # No password is used, so the sheet can still be unprotected easily if needed.
     worksheet.protect(options={
         "select_locked_cells": True,
         "select_unlocked_cells": True,
