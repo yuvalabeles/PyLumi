@@ -28,7 +28,7 @@ DISPLAY_NAMES = {
     "file_suffix": "Raw file suffix",
     "save_file": "Save processed files",
     "interval_minutes": "Length of Lumi's interval",
-    "max_days": "Maximum days",
+    "max_days": "Maximum days to analyze",
     "plot_raw_data": "Create plots of the data",
     "replicate_display_mode": "Replicate display mode",
     "plot_style": "Choose plot style",
@@ -57,11 +57,13 @@ SECTIONS = [
         "settings": [
             {
                 "name": "input_folder",
-                "default": r"C:/Users/yuval/OneDrive/Desktop/Lumi/ORG slices contr females 13.4.26/Analysis/",
-                "allowed": "Folder path as text. \nExample: C:/Users/.../Analysis/",
+                "required": True,
+                "default": None,
+                "allowed": "Folder path as text. \n\nExample: C:/Users/.../Analysis/",
                 "description": (
                     "Paste the path to the folder that contains the Lumi raw CSV files. "
                     "The folder should contain files such as 1a_Raw.csv, 1b_Raw.csv, 2a_Raw.csv, etc."
+                    "Make sure the backslashes / are in the same direction as here."
                 ),
             },
         ],
@@ -71,11 +73,12 @@ SECTIONS = [
         "settings": [
             {
                 "name": "output_folder",
-                "default": "test_output",
-                "allowed": "Folder name or full folder path as text.",
+                "required": True,
+                "default": "analysis_output",
+                "allowed": "Folder name \nor \nFull folder path",
                 "description": (
                     "Choose the name/path of the folder where processed results will be saved. "
-                    "If the folder does not exist, it will be created automatically."
+                    "If the folder does not exist, it will create a new folder with that name."
                 ),
             },
         ],
@@ -85,21 +88,24 @@ SECTIONS = [
         "settings": [
             {
                 "name": "replicates_per_group",
-                "default": 5,
-                "allowed": "Positive integer. \nExample: 5",
+                "required": True,
+                "default": 3,
+                "allowed": "Positive integer. \n\nExample: 3",
                 "description": (
-                    "How many raw files belong to each sample/group. "
-                    "\nFor example, if each biological sample has 5 replicate files, use 5."
+                    "How many raw files belong to each sample/group."
+                    "\nNote that the code assumes the replicates are saved consecutively."
+                    "\n\nFor example, if each sample has 3 replicate files, use 3."
                 ),
             },
             {
                 "name": "sample_tags",
-                "default": '["Liver1", "Liver2", "Kid1", "Kid2", "Lung1", "Lung2"]',
-                "allowed": 'List of group names, or None. \nExample: ["Liver1", "Liver2"]',
+                "default": None,
+                "allowed": 'List of group names, or None. \n\nExample: ["Liver", "Kidney", "Lung"]',
                 "description": (
-                    "Optional group names. These names will be assigned to groups according to the detected file order. "
-                    "If you do not want to provide names, write None. Then groups will be named automatically: "
-                    "Group_1, Group_2, Group_3, ..."
+                    "Optional labels for each group of replicates. "
+                    "These names will be assigned to groups according to the detected file order."
+                    "\n\nIf you do not want to provide names, leave None. "
+                    "Then groups will be named automatically: Group_1, Group_2, Group_3, ..."
                 ),
             },
             {
@@ -107,9 +113,9 @@ SECTIONS = [
                 "default": False,
                 "allowed": "True / False",
                 "description": (
-                    "What to do with leftover files that do not complete a full group. "
-                    "False = ignore leftover files and print a warning. "
-                    "True = analyse leftover files as an additional group named Extra."
+                    "Handle the extra files that don't complete a full group of replicates: "
+                    "\n\n•  False = ignore leftover files and print a message to the user."
+                    "\n•  True = analyse leftover files as an additional group named Extra."
                 ),
                 "validation": ["True", "False"],
             },
@@ -121,9 +127,9 @@ SECTIONS = [
             {
                 "name": "noise_max",
                 "default": 25,
-                "allowed": "Number. \nExample: 25",
+                "allowed": "Number. \n\nExample: 25",
                 "description": (
-                    "The minimum counts/sec value that marks the beginning of the real signal. "
+                    "The minimum counts/sec value that marks the beginning of the real signal."
                     "All consecutive rows from the start, with counts below this threshold, are treated as pre-sample noise."
                 ),
             },
@@ -132,8 +138,8 @@ SECTIONS = [
                 "default": True,
                 "allowed": "True / False",
                 "description": (
-                    "True = subtract the average pre-sample noise from the signal. "
-                    "False = keep the signal without subtracting that background."
+                    "•  True = subtract the average pre-sample noise from the signal."
+                    "\n•  False = keep the signal without subtracting that background."
                 ),
                 "validation": ["True", "False"],
             },
@@ -145,7 +151,7 @@ SECTIONS = [
             {
                 "name": "extension",
                 "default": ".csv",
-                "allowed": "File extension as text. Usually .csv",
+                "allowed": "File extension. \n\nExample .csv",
                 "description": (
                     "Usually this should not be changed. Change only if the Lumi output files use a different file extension."
                 ),
@@ -153,7 +159,7 @@ SECTIONS = [
             {
                 "name": "suffix_to_remove",
                 "default": "_Raw",
-                "allowed": "Text suffix. \nExample: _Raw",
+                "allowed": "Text suffix. \n\nExample: _Raw",
                 "description": (
                     "Usually this should not be changed. This suffix is removed from raw file names when creating cleaner names."
                 ),
@@ -161,7 +167,7 @@ SECTIONS = [
             {
                 "name": "file_suffix",
                 "default": "_Raw.csv",
-                "allowed": "Text suffix. \nExample: _Raw.csv",
+                "allowed": "Text suffix. \n\nExample: _Raw.csv",
                 "description": (
                     "Usually this should not be changed. Change only if the Lumi output files use different names."
                 ),
@@ -176,8 +182,8 @@ SECTIONS = [
                 "default": True,
                 "allowed": "True / False",
                 "description": (
-                    "True = save processed files to output_folder. "
-                    "False = run analysis without saving files."
+                    "•  True = save processed files to the given output folder."
+                    "\n•  False = run analysis without saving files."
                 ),
                 "validation": ["True", "False"],
             },
@@ -189,16 +195,18 @@ SECTIONS = [
             {
                 "name": "interval_minutes",
                 "default": 10,
-                "allowed": "Positive number. \nExample: 10",
-                "description": "Sampling interval in minutes.",
+                "allowed": "Positive number. \n\nExample: 10",
+                "description": "The length of the sampling interval in minutes. "
+                               "\n\nNote: Lumi's interval by default is 10 minutes.",
             },
             {
                 "name": "max_days",
-                "default": 7,
+                "default": None,
                 "allowed": "Positive number, or None.",
                 "description": (
-                    "Optional: limit analysis to the first N days after alignment. "
-                    "Use only one of max_rows, max_hours, max_days. Leave all as None to keep the full data."
+                    "Limit analysis to the first N days. "
+                    "Leave None for no limit, or choose a positive number N for number of days to analyze."
+                    "\n\nThis feature is useful to cut the tail of the data if it isn't significant to the analysis."
                 ),
             },
         ],
@@ -211,20 +219,21 @@ SECTIONS = [
                 "default": True,
                 "allowed": "True / False",
                 "description": (
-                    "True = create and save raw-data plots. "
-                    "False = do not create raw-data plots."
+                    "•  True = create and save raw-data plots. "
+                    "\n•  False = do not create raw-data plots."
                 ),
                 "validation": ["True", "False"],
             },
             {
                 "name": "replicate_display_mode",
                 "default": "replicates_and_mean",
-                "allowed": "replicates_and_mean / mean_only / replicates_only",
+                "allowed": "replicates_and_mean /\nmean_only /\nreplicates_only",
                 "description": (
-                    "Choose what to display on the raw-data plots. "
-                    "replicates_and_mean = show both replicates and the average signal. "
-                    "mean_only = show only the average signal. "
-                    "replicates_only = show only the replicate signals, without the average."
+                    "Choose what to display on the raw-data plots from these options:"
+                    "\n\n•  replicates_and_mean = show replicates and their average."
+                    "\n•  mean_only = show only the average signal."
+                    "\n•  replicates_only = show only the replicates, without the average."
+                    "\n\nNote: you can also hide specific replicates in the override section."
                 ),
                 "validation": [
                     "replicates_and_mean",
@@ -235,48 +244,52 @@ SECTIONS = [
             {
                 "name": "plot_style",
                 "default": "line",
-                "allowed": "points / line / points+line",
+                "allowed": "points /\nline /\npoints+line",
                 "description": (
-                    "Plot display style. points = plot data as points only. "
-                    "line = plot data as continuous lines. "
-                    "points+line = plot points connected by lines."
+                    "Plot display style - choose from the options below:"
+                    "\n\n•  points = plot data as points only."
+                    "\n•  line = plot data as continuous lines."
+                    "\n•  points+line = plot points connected by lines."
                 ),
                 "validation": ["points", "line", "points+line"],
             },
             {
                 "name": "y_limit",
-                "default": "None",
-                "allowed": "None, a number, or a tuple. \nExamples: None, 500, (-100, 500)",
+                "default": None,
+                "allowed": "None, an upper limit, or a range. \n\nExamples: None, 500, (-100, 500)",
                 "description": (
-                    "Y-axis limit. None = automatic y-axis scaling. "
-                    "500 = y-axis from 0 to 500. (-100, 500) = y-axis from -100 to 500."
+                    "You can choose a unified Y-axis limit for all the groups:"
+                    "\n\n•  None = automatic y-axis scaling."
+                    "\n•  500 = y-axis from 0 to 500."
+                    "\n•  (-100, 500) = y-axis from -100 to 500."
                 ),
             },
             {
                 "name": "description",
-                "default": "Control (females 13.4.26)",
-                "allowed": "Text, or None.",
+                "default": None,
+                "allowed": "Text, or None. \n\nExample: \"Experiment 2.6.26\".",
                 "description": (
-                    "Optional text shown in the top-right corner of the plot. "
-                    "Use None for no description or write the desired text."
+                    "Optional text shown in the top-right corner of the plot."
+                    "\nUse None for no description or write the desired text in quotes \" \"."
                 ),
             },
             {
                 "name": "ct_start_hour",
-                "default": 6,
-                "allowed": "Number. \nExample: 6",
+                "default": 0,
+                "allowed": "Number. \n\nExample: 6",
                 "description": (
-                    "CT shift. This changes the CT values used in saved condensed data and plots. "
-                    "\nExample: ct_start_hour = 6 means the first row is CT = 6."
+                    "CT shift - this changes the CT values to start from the given shift."
+                    "\n\nExample: CT start hour = 6 means the first row is CT = 6."
                 ),
             },
             {
                 "name": "x_axis_start",
                 "default": 0,
-                "allowed": "Number. Usually 0.",
+                "allowed": "Number. \n(Usually 0)",
                 "description": (
-                    "Left x-axis limit for plots. Usually keep 0 so the plot axis starts visually at 0, "
-                    "even if the first data point starts at shifted CT such as 6."
+                    "Left x-axis limit for the plots. "
+                    "\nUsually keep 0 so the plot axis starts visually at 0, "
+                    "even if the first data point starts at some shifted CT such as 6."
                 ),
             },
         ],
@@ -286,26 +299,30 @@ SECTIONS = [
         "settings": [
             {
                 "name": "plot_peaks",
-                "default": True,
+                "default": False,
                 "allowed": "True / False",
                 "description": (
-                    "True = detect and mark peaks on raw-data plots. "
-                    "False = do not show peaks."
+                    "•  True = show peaks for each replicate on raw-data plots. "
+                    "\n•  False = do not show peaks for the replicates."
                 ),
                 "validation": ["True", "False"],
             },
             {
                 "name": "show_average_peaks",
-                "default": True,
+                "default": False,
                 "allowed": "True / False",
-                "description": "Whether to show peak markers for the average signal.",
+                "description": (
+                    "•  True = show the peaks of the average signal on raw-data plots."
+                    "\n•  False = do not show peaks for the average signal."
+                ),
                 "validation": ["True", "False"],
             },
             {
                 "name": "show_average_peaks_txt",
-                "default": True,
+                "default": False,
                 "allowed": "True / False",
-                "description": "Whether to show text labels next to average-signal peaks.",
+                "description": "•  True = show text labels with CT next to average-signal peaks."
+                               "\n•  False = do not show CT labels.",
                 "validation": ["True", "False"],
             },
         ],
@@ -317,13 +334,14 @@ SECTIONS = [
                 "name": "save_peak_tables",
                 "default": True,
                 "allowed": "True / False",
-                "description": "True = create an Excel file with one peaks/periods table per group.",
+                "description": "•  True = create an Excel file with peaks + periods table per group."
+                               "\n•  False = do not create an Excel file for peaks + periods.",
                 "validation": ["True", "False"],
             },
             {
                 "name": "peak_table_decimals",
                 "default": 2,
-                "allowed": "Non-negative integer. \nExample: 2",
+                "allowed": "Non-negative integer. \n\nExample: 2",
                 "description": "Number of decimals in peak and period values.",
             },
         ],
@@ -334,47 +352,52 @@ SECTIONS = [
             {
                 "name": "override_group_names",
                 "default": "[]",
-                "allowed": 'List of group names. Example: ["Liver1", "Liver2", "Kid1"]',
+                "allowed": 'List of group names. \nExample: ["Liver", "Kidney", "Lung"]',
                 "description": (
-                    "Use this section only when you want to override specific settings for specific groups. "
-                    "First, write the group names in this row as a list. "
-                    "Then, for each override setting below, write a list with the same number of positions and in the same order. "
-                    "Each position matches the group name in the same position. "
-                    "Leave an empty position when you do not want to override that setting for that group. "
-                    "For example, if group names are [\"Liver1\", \"Liver2\", \"Kid1\"], then [500, , 700] means: "
-                    "Liver1 gets 500, Liver2 gets no override, and Kid1 gets 700. "
-                    "Spaces in empty positions are allowed. For text values, use quotes, for example: [\"Control\", , \"Kidney\"]."
+                    "Use this section only when you want to override specific settings for specific groups."
+                    "\nFirst, write the group names in this row as a list. List only the groups for which you'd like to adjust the settings."
+                    "\nThen, for each override setting below, write a list with the same number of positions and in the same order."
+                    "\nEach position matches the group name in the same position."
+                    "\nLeave an empty position when you do not want to override that setting for that group."
+                    "\n\nFor example, if group names are [\"Liver\", \"Kidney\", \"Lung\"], then [500, , 700] means:"
+                    "\nLiver gets 500, Kidney gets no override, and Lung gets 700."
+                    "\nSpaces in empty positions are allowed. For text values, use quotes, for example: [\"Control\", , \"Kidney\"]."
                 ),
             },
             {
                 "name": "override_y_limit",
                 "default": "[]",
-                "allowed": "List with one value per group, or an empty position for no override. Example: [500, , (-100, 500)]",
+                "allowed": "List with one value per group, or an empty position for no override. \n\nExample: [500, , (-100, 500)]",
                 "description": "See section: PLOTTING SETTINGS, setting: Y-axis limit, for a detailed description.",
             },
             {
                 "name": "override_description",
                 "default": "[]",
-                "allowed": 'List with one value per group, or an empty position for no override. Example: ["Control", , "Kidney"]',
+                "allowed": 'List with one value per group, or an empty position for no override. \n\nExample: ["Control", , "Kidney"]',
                 "description": "See section: PLOTTING SETTINGS, setting: Plot description, for a detailed description.",
             },
             {
                 "name": "override_peak_txt_dy",
                 "default": "[]",
-                "allowed": "List with one value per group, or an empty position for no override. Example: [20, , 35]",
-                "description": "See section: PEAK SETTINGS, setting: Peak label vertical offset, for a detailed description.",
+                "allowed": "List with one value per group, or an empty position for no override. \n\nExample: [20, , 35]",
+                "description": "This value is used to adjust the position of the peak text labels.",
             },
             {
                 "name": "override_mean_replicate_cols",
                 "default": "[]",
-                "allowed": 'List with one value per group, or an empty position for no override. Example: [None, ["c i", "c iii"], ]',
-                "description": "See section: PLOTTING SETTINGS, setting: Replicates used for mean, for a detailed description.",
+                "allowed": "List with one value per group, or an empty position for no override."
+                           "\nEach value has to be a list [] of replicates names in quotes, or None."
+                           "\n\nExample: [None, [\"1a\", \"1b\"], ]",
+                "description": "For each group choose specific replicates to disable from the average signal.",
             },
             {
                 "name": "override_visible_replicate_cols",
                 "default": "[]",
-                "allowed": 'List with one value per group, or an empty position for no override. Example: [None, [], ["c i"]]',
-                "description": "See section: PLOTTING SETTINGS, setting: Replicates shown on plot, for a detailed description.",
+                "allowed": "List with one value per group, or an empty position for no override."
+                           "\nEach value has to be a list [] of replicates names in quotes, or None."
+                           "\n\nExample: [None, [\"1a\", \"1b\"], ]",
+                "description": "For each group choose specific replicates to hide from the plot."
+                               "\nNote: this does NOT disable them from the calculation of the average signal.",
             },
         ],
     },
@@ -448,6 +471,17 @@ def create_settings_template(output_path=OUTPUT_FILE):
         "font_size": 15,
     })
 
+    red_star_format = workbook.add_format({
+        "bg_color": "#FAEAEA",
+        "border": 1,
+        "valign": "vcenter",
+        "text_wrap": True,
+        "locked": True,
+        "font_size": 20,
+        "font_color": "red",
+        "bold": True,
+    })
+
     locked_centered_format = workbook.add_format({
         "bg_color": "#FAEAEA",
         "border": 1,
@@ -498,7 +532,7 @@ def create_settings_template(output_path=OUTPUT_FILE):
     worksheet.set_column(1, 1, 42)
     worksheet.set_column(2, 2, 42)
     worksheet.set_column(3, 3, 42)
-    worksheet.set_column(4, 4, 75)
+    worksheet.set_column(4, 4, 78)
     worksheet.set_column(5, 5, 0, None, {"hidden": True})
 
     worksheet.freeze_panes(1, 0)
@@ -520,7 +554,19 @@ def create_settings_template(output_path=OUTPUT_FILE):
 
         for item in section["settings"]:
             display_name = DISPLAY_NAMES.get(item["name"], item["name"].replace("_", " ").title()) + ":"
-            worksheet.write(row, 1, display_name, locked_text_format)
+
+            if item.get("required", False):
+                worksheet.write_rich_string(
+                    row,
+                    1,
+                    red_star_format,
+                    "*",
+                    locked_text_format,
+                    display_name,
+                    locked_text_format,
+                )
+            else:
+                worksheet.write(row, 1, display_name, locked_text_format)
 
             default_value = item["default"]
             if isinstance(default_value, bool):
@@ -530,8 +576,22 @@ def create_settings_template(output_path=OUTPUT_FILE):
             else:
                 worksheet.write(row, 2, default_value, editable_text_format)
 
-            worksheet.write(row, 3, item["allowed"], locked_centered_format)
-            worksheet.write(row, 4, item["description"], locked_description_format)
+            allowed_text = f"\n{item['allowed']}\n"
+            worksheet.write(
+                row,
+                3,
+                allowed_text,
+                locked_centered_format,
+            )
+
+            description_text = f"\n{item['description']}\n"
+            worksheet.write(
+                row,
+                4,
+                description_text,
+                locked_description_format,
+            )
+
             worksheet.write(row, 5, item["name"], locked_text_format)
 
             if "validation" in item:
