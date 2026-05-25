@@ -2,275 +2,254 @@
 
 Lumi Analysis is a Python pipeline for analysing Lumi luminescence experiments.
 
-The pipeline receives raw CSV files exported from the Lumi software and produces:
-- processed data tables
-- grouped replicate analysis
-- condensed summary tables
-- inspectable intermediate processing stages
-- export-ready outputs for downstream plotting and analysis
+The pipeline receives raw CSV files exported from Lumi software and performs:
 
-The project is designed for grouped biological replicate experiments.
+- grouped biological replicate analysis
+- preprocessing and signal cleaning
+- plotting
+- peak and period analysis
+- Excel export of processed outputs
+
+The pipeline is configured through an Excel settings file (`settings.xlsx`).
 
 ---
 
-# Project Structure
+# Quick Start
+
+## 1. Install Python
+
+First, check whether Python is already installed.
+
+### Windows
+
+Open Command Prompt:
+
+- Press the Windows key
+- Type:
 
 ```text
-Lumi Analysis/
-│
-├── lumi_analysis/
-│   ├── core/
-│   ├── export/
-│   └── ...
-│
-├── scripts/
-│   └── run_pipeline.py
-│
-└── README.md
+cmd
 ```
 
----
+- Press Enter
 
-# Requirements
-
-Python 3.10+ recommended.
-
-Required packages:
-- pandas
-- numpy
-- openpyxl
-
-Install dependencies:
+Run:
 
 ```bash
-pip install pandas numpy openpyxl
+py --version
 ```
 
----
+### macOS
 
-# Input Data
+Open Terminal:
 
-The input folder should contain raw CSV files exported from the Lumi software.
-
-Typical file names:
+- Press `⌘ + Space`
+- Search for:
 
 ```text
-1a_Raw.csv
-1b_Raw.csv
-1c_Raw.csv
-...
+Terminal
 ```
 
-The files are automatically grouped into replicate groups according to the user settings.
-
----
-
-# Running the Pipeline
-
-Open:
-
-```text
-scripts/run_pipeline.py
-```
-
-Edit only the `USER SETTINGS` section.
-
-Then run:
+Run:
 
 ```bash
-python scripts/run_pipeline.py
+python3 --version
+```
+
+If Python is not installed, download it from:
+
+https://www.python.org/downloads/
+
+Windows users: during installation make sure to check:
+
+```text
+Add Python to PATH
 ```
 
 ---
 
-# Main User Settings
+## 2. Save the Lumi folder
 
-## Input folder
+Save the Lumi Analysis folder somewhere easy to access.
 
-```python
-"input_folder"
-```
+Recommended:
 
-Path to the folder containing the Lumi raw CSV files.
+- Desktop
+- Documents
 
----
-
-## Output folder
-
-```python
-"output_folder"
-```
-
-Folder where processed results will be saved.
+Do not rename internal files.
 
 ---
 
-## Replicates per group
+## 3. Prepare your data
 
-```python
-"replicates_per_group"
-```
+Place Lumi raw CSV files inside a single folder.
 
-Number of replicate files belonging to each biological sample/group.
+Recommended:
+
+Use the `Analysis` folder automatically created by Lumi.
 
 Example:
 
 ```text
-5 replicate files per sample group
+Analysis/
+├── 1a_Raw.csv
+├── 1b_Raw.csv
+├── 2a_Raw.csv
+├── 2b_Raw.csv
 ```
+
+Replicates belonging to the same condition must appear consecutively.
 
 ---
 
-## Sample tags
+## 4. Configure `settings.xlsx`
 
-```python
-"sample_tags"
-```
+Open the Excel settings file.
 
-Optional names assigned to detected groups.
+Settings marked with `(*)` must be edited or verified before the first run.
 
-Example:
+Only the blue column is editable.
 
-```python
-[
-    "Control",
-    "Treatment_1",
-    "Treatment_2",
-]
-```
+Every time settings are changed:
 
-If set to:
+1. Save the Excel file  
+2. Re-run the pipeline
 
-```python
+### Settings syntax rules
+
+#### Empty cell = `None`
+
+An empty cell is equivalent to:
+
+```text
 None
 ```
 
-Groups will be named automatically:
+#### Lists
+
+Lists must use square brackets:
 
 ```text
-Group_1
-Group_2
-Group_3
+[ ]
 ```
 
----
-
-## Include extra group
+Examples:
 
 ```python
-"include_extra_group"
+[1, 2, 3]
+["control", "Dex", "Dex 25"]
+[True, "sample", 2, False]
 ```
 
-Controls what happens when leftover files do not complete a full group.
+Notes:
 
-Options:
+- Text inside lists must be in quotation marks
+- Numbers and booleans (`True/False`) should NOT be in quotation marks
+- Outside lists, quotation marks are not required
 
-```python
-True
-False
+#### Folder paths
+
+Windows example:
+
+```text
+C:\Users\YourName\Desktop\Analysis
 ```
 
-If enabled, leftover files are analysed as an additional group named `Extra`.
+macOS example:
+
+```text
+/Users/YourName/Desktop/Analysis
+```
+
+Windows uses `\`  
+macOS uses `/`
 
 ---
 
-## Noise threshold
+## 5. Open Terminal inside the Lumi folder
 
-```python
-"noise_max"
+### Windows
+
+Right-click inside the Lumi folder and choose:
+
+```text
+Open in Terminal
 ```
 
-Minimum counts/sec value used to detect the beginning of the biological signal.
+### macOS
 
-Rows before this threshold are treated as pre-sample noise.
+Right-click the Lumi folder and choose:
 
----
-
-## Remove noise
-
-```python
-"remove_noise"
+```text
+New Terminal at Folder
 ```
 
-Options:
+Or navigate manually:
 
-```python
-True
-False
+```bash
+cd /path/to/Lumi_folder
 ```
 
-If enabled, the average pre-sample signal is subtracted from the data.
+Example:
 
----
-
-# Output
-
-The pipeline generates:
-- processed replicate tables
-- combined full tables
-- condensed analysis tables
-- intermediate analysis objects
-
-All outputs are saved automatically into the selected output folder.
-
----
-
-# Intermediate Analysis Objects
-
-The pipeline stores intermediate processing stages internally.
-
-These include:
-- raw loaded dataframes
-- processed dataframes
-- aligned replicate dataframes
-- final result tables
-
-This allows future interactive inspection and visualization.
-
----
-
-# Common Errors
-
-## Folder does not exist
-
-Check that:
-
-```python
-"input_folder"
-```
-
-points to a valid folder.
-
----
-
-## Missing CSV files
-
-Make sure the folder contains Lumi-exported CSV files.
-
----
-
-## Wrong replicate count
-
-If files are grouped incorrectly, verify:
-
-```python
-"replicates_per_group"
-```
-
-and:
-
-```python
-"sample_tags"
+```bash
+cd /Users/YourName/Desktop/Lumi
 ```
 
 ---
 
-# Future Development
+## 6. Run the pipeline
 
-Planned features:
-- interactive plotting
-- Streamlit graphical interface
-- manual replicate grouping
-- parameter tuning UI
-- intermediate-stage visualization
-- automated report generation
+### Windows
+
+```bash
+python -m scripts.run_pipeline
+```
+
+### macOS
+
+```bash
+python3 -m scripts.run_pipeline
+```
+
+The first run may take longer because required packages are installed automatically.
+
+---
+
+## 7. Find your results
+
+Results are saved to the output folder defined in `settings.xlsx`.
+
+If only a folder name is provided instead of a full path, the results folder will most likely be created inside the Lumi pipeline folder.
+
+To avoid overwriting previous analyses:
+
+- move completed result folders elsewhere
+- or define a full output path in `settings.xlsx`
+
+---
+
+# Common Issues
+
+## Python is not recognized
+
+Python may not be installed or added to PATH.
+
+Check:
+
+```text
+Add Python to PATH
+```
+
+## Input folder does not exist
+
+Verify the input folder path in `settings.xlsx`.
+
+## Output folder issues
+
+Verify the output folder path in `settings.xlsx`.
+
+## Settings changes do not appear
+
+Make sure the settings file was saved and the pipeline re-run.

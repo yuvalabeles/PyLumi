@@ -1,3 +1,4 @@
+from pathlib import Path
 import subprocess
 import sys
 
@@ -48,9 +49,14 @@ from scripts.load_settings import load_settings
 # Do not change anything within this, or any other code files.
 # ==================================================================================================================== #
 
-config = load_settings("../settings.xlsx")
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+SETTINGS_PATH = PROJECT_ROOT / "settings.xlsx"
+
+config = load_settings(SETTINGS_PATH)
+
 
 if __name__ == "__main__":
+
     result = run_lumi_pipeline(config)
 
     print("\nPipeline finished successfully.")

@@ -63,7 +63,6 @@ SECTIONS = [
                 "description": (
                     "Paste the path to the folder that contains the Lumi raw CSV files. "
                     "The folder should contain files such as 1a_Raw.csv, 1b_Raw.csv, 2a_Raw.csv, etc."
-                    "Make sure the backslashes / are in the same direction as here."
                 ),
             },
         ],
