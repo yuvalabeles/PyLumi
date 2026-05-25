@@ -119,14 +119,17 @@ def load_settings(settings_path):
             column=VALUE_COL
         ).value
 
-        # GROUP OVERRIDE ROWS
-        if config_key in GROUP_OVERRIDE_SETTINGS or config_key == "group_names":
-
+        # GROUP NAMES
+        if config_key == "group_names":
             override_lists[config_key] = parse_override_list(raw_value)
+            continue
 
         # REGULAR SETTINGS
-        else:
-            config[config_key] = parse_setting_value(raw_value)
+        config[config_key] = parse_setting_value(raw_value)
+
+        # GROUP OVERRIDE SETTINGS
+        if config_key in GROUP_OVERRIDE_SETTINGS:
+            override_lists[config_key] = parse_override_list(raw_value)
 
     # ------------------------------------------------------------------
     # BUILD plot_group_settings
