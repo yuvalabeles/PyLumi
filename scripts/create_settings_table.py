@@ -103,8 +103,8 @@ SECTIONS = [
                 "description": (
                     "Optional labels for each group of replicates. "
                     "These names will be assigned to groups according to the detected file order."
-                    "\n\nIf you do not want to provide names, leave None. "
-                    "Then groups will be named automatically: Group_1, Group_2, Group_3, ..."
+                    "\n\nIf no labels are provided, the groups will be named automatically: "
+                    "\"Unlabeled_1\", \"Unlabeled_2\", \"Unlabeled_3\", ..."
                 ),
             },
             {
@@ -196,7 +196,7 @@ SECTIONS = [
                 "default": 10,
                 "allowed": "Positive number. \n\nExample: 10",
                 "description": "The length of the sampling interval in minutes. "
-                               "\n\nNote: Lumi's interval by default is 10 minutes.",
+                               "\n\nNOTE: Lumi's interval by default is 10 minutes.",
             },
             {
                 "name": "max_days",
@@ -232,7 +232,7 @@ SECTIONS = [
                     "\n\n•  replicates_and_mean = show replicates and their average."
                     "\n•  mean_only = show only the average signal."
                     "\n•  replicates_only = show only the replicates, without the average."
-                    "\n\nNote: you can also hide specific replicates in the override section."
+                    "\n\nNOTE: you can also hide specific replicates in the override section."
                 ),
                 "validation": [
                     "replicates_and_mean",
