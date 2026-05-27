@@ -354,10 +354,11 @@ SECTIONS = [
                 "allowed": 'List of group names. \nExample: ["Liver", "Kidney", "Lung"]',
                 "description": (
                     "Use this section only when you want to override specific settings for specific groups."
-                    "\nFirst, write the group names in this row as a list. List only the groups for which you'd like to adjust the settings."
-                    "\nThen, for each override setting below, write a list with the same number of positions and in the same order."
-                    "\nEach position matches the group name in the same position."
-                    "\nLeave an empty position when you do not want to override that setting for that group."
+                    "\n\nImportant Notes:"
+                    "\nNOTE #1: write only the groups for which you want to override at least one setting."
+                    "\nNOTE #2: each group name MUST be in quotes (example: \"Liver\")."
+                    "\nNOTE #3: when overriding a setting, maintain the same order in which you listed the groups."
+                    "Each position matches the group name in the same position."
                     "\n\nFor example, if group names are [\"Liver\", \"Kidney\", \"Lung\"], then [500, , 700] means:"
                     "\nLiver gets 500, Kidney gets no override, and Lung gets 700."
                     "\nSpaces in empty positions are allowed. For text values, use quotes, for example: [\"Control\", , \"Kidney\"]."
@@ -366,37 +367,43 @@ SECTIONS = [
             {
                 "name": "override_y_limit",
                 "default": "[]",
-                "allowed": "List with one value per group, or an empty position for no override. \n\nExample: [500, , (-100, 500)]",
+                "allowed": "List with one value (number/range) per group, or None for no override."
+                           "\n\nExample: [500, None, (-100, 500)]",
                 "description": "See section: PLOTTING SETTINGS, setting: Y-axis limit, for a detailed description.",
             },
             {
                 "name": "override_description",
                 "default": "[]",
-                "allowed": 'List with one value per group, or an empty position for no override. \n\nExample: ["Control", , "Kidney"]',
+                "allowed": 'List with one value per group, or None for no override. \n\nExample: ["Exp. 1", None, None, None]',
                 "description": "See section: PLOTTING SETTINGS, setting: Plot description, for a detailed description.",
             },
             {
                 "name": "override_peak_txt_dy",
                 "default": "[]",
-                "allowed": "List with one value per group, or an empty position for no override. \n\nExample: [20, , 35]",
+                "allowed": "List with one value per group, or None for no override. \n\nExample: [20, None, None, 35]",
                 "description": "This value is used to adjust the position of the peak text labels.",
             },
             {
                 "name": "override_mean_replicate_cols",
                 "default": "[]",
-                "allowed": "List with one value per group, or an empty position for no override."
-                           "\nEach value has to be a list [] of replicates names in quotes, or None."
-                           "\n\nExample: [None, [\"1a\", \"1b\"], ]",
-                "description": "For each group choose specific replicates to disable from the average signal.",
+                "allowed": "Examples:"
+                           "\n\n• Single replicate:"
+                           "\n[None, None, [\"2a\"], None]"
+                           "\n\n• Multiple replicates:"
+                           "\n[None, [\"1a\", \"1b\"], [\"2c\"], None]"
+                           "\n\n• INCORRECT:"
+                           "\n[None, None, \"2a\", None]",
+                "description": "For each group choose specific replicates to disable from the average signal."
+                               "\n\nNOTE #1: each value in the outer list has to be either a list or None."
+                               "\nNOTE #2: each replicate has to be written inside quotes (\" \")."
+                               "\nNOTE #3: disabling a replicate also removes it from the plot.",
             },
             {
                 "name": "override_visible_replicate_cols",
                 "default": "[]",
-                "allowed": "List with one value per group, or an empty position for no override."
-                           "\nEach value has to be a list [] of replicates names in quotes, or None."
-                           "\n\nExample: [None, [\"1a\", \"1b\"], ]",
+                "allowed": "See examples above.",
                 "description": "For each group choose specific replicates to hide from the plot."
-                               "\nNote: this does NOT disable them from the calculation of the average signal.",
+                               "\n\nNOTE: this does NOT exclude them from the calculation of the average signal.",
             },
         ],
     },
