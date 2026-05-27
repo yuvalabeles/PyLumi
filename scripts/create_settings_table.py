@@ -359,9 +359,8 @@ SECTIONS = [
                     "\nNOTE #2: each group name MUST be in quotes (example: \"Liver\")."
                     "\nNOTE #3: when overriding a setting, maintain the same order in which you listed the groups."
                     "Each position matches the group name in the same position."
-                    "\n\nFor example, if group names are [\"Liver\", \"Kidney\", \"Lung\"], then [500, , 700] means:"
+                    "\n\nFor example, if group names are [\"Liver\", \"Kidney\", \"Lung\"], then [500, None, 700] means:"
                     "\nLiver gets 500, Kidney gets no override, and Lung gets 700."
-                    "\nSpaces in empty positions are allowed. For text values, use quotes, for example: [\"Control\", , \"Kidney\"]."
                 ),
             },
             {
