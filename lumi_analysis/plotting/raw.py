@@ -177,23 +177,22 @@ def plot_raw_replicates(
 
     all_replicate_cols = get_lumi_replicate_columns(df, mean_col=mean_col)
 
+    disabled_replicate_cols = mean_replicate_cols or []
+
     if mean_replicate_cols is None:
         mean_replicate_cols = all_replicate_cols
     else:
-        replicates_to_keep = [
+        mean_replicate_cols = [
             col for col in all_replicate_cols
-            if col not in mean_replicate_cols
+            if col not in disabled_replicate_cols
         ]
-        mean_replicate_cols = replicates_to_keep
 
-    if visible_replicate_cols is None:
-        visible_replicate_cols = all_replicate_cols
-    else:
-        replicates_to_show = [
-            col for col in all_replicate_cols
-            if col not in visible_replicate_cols
-        ]
-        visible_replicate_cols = replicates_to_show
+    hidden_replicate_cols = visible_replicate_cols or []
+
+    visible_replicate_cols = [
+        col for col in all_replicate_cols
+        if col not in hidden_replicate_cols and col not in disabled_replicate_cols
+    ]
 
     if replicate_display_mode == "mean_only":
         visible_replicate_cols = []
@@ -385,6 +384,20 @@ def plot_raw_replicates(
             ha="right",
             va="top",
             fontsize=10,
+        )
+
+    if len(disabled_replicate_cols) > 0:
+        disabled_text = "* Replicates excluded from the data: " + ", ".join(disabled_replicate_cols)
+
+        fig.text(
+            0.01,
+            0.01,
+            disabled_text,
+            ha="left",
+            va="bottom",
+            fontsize=8,
+            alpha=0.8,
+            fontstyle="italic",
         )
 
     fig.tight_layout()

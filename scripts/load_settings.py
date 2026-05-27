@@ -4,13 +4,13 @@ from ast import literal_eval
 from openpyxl import load_workbook
 
 
-GROUP_OVERRIDE_SETTINGS = [
-    "y_limit",
-    "description",
-    "peak_txt_dy",
-    "mean_replicate_cols",
-    "visible_replicate_cols",
-]
+GROUP_OVERRIDE_SETTINGS = {
+    "override_y_limit": "y_limit",
+    "override_description": "description",
+    "override_peak_txt_dy": "peak_txt_dy",
+    "override_mean_replicate_cols": "mean_replicate_cols",
+    "override_visible_replicate_cols": "visible_replicate_cols",
+}
 
 
 def parse_setting_value(value):
@@ -90,13 +90,6 @@ def load_settings(settings_path):
 
     config = {}
 
-    # Current template columns:
-    # A = Section
-    # B = Setting
-    # C = Value
-    # D = Possible Values
-    # E = Description
-    # F = Config Key
     VALUE_COL = 3
     CONFIG_KEY_COL = 6
 
@@ -119,23 +112,24 @@ def load_settings(settings_path):
             column=VALUE_COL
         ).value
 
-        # GROUP NAMES
-        if config_key == "group_names":
+        # GROUP OVERRIDE NAMES
+        if config_key == "override_group_names":
+            override_lists[config_key] = parse_override_list(raw_value)
+            continue
+
+        # GROUP OVERRIDE SETTINGS
+        if config_key in GROUP_OVERRIDE_SETTINGS:
             override_lists[config_key] = parse_override_list(raw_value)
             continue
 
         # REGULAR SETTINGS
         config[config_key] = parse_setting_value(raw_value)
 
-        # GROUP OVERRIDE SETTINGS
-        if config_key in GROUP_OVERRIDE_SETTINGS:
-            override_lists[config_key] = parse_override_list(raw_value)
-
     # ------------------------------------------------------------------
     # BUILD plot_group_settings
     # ------------------------------------------------------------------
 
-    group_names = override_lists.get("group_names", [])
+    group_names = override_lists.get("override_group_names", [])
 
     plot_group_settings = {}
 
@@ -148,9 +142,9 @@ def load_settings(settings_path):
 
         group_overrides = {}
 
-        for setting_name in GROUP_OVERRIDE_SETTINGS:
+        for excel_key, final_setting_name in GROUP_OVERRIDE_SETTINGS.items():
 
-            values_list = override_lists.get(setting_name, [])
+            values_list = override_lists.get(excel_key, [])
 
             if group_index >= len(values_list):
                 continue
@@ -161,7 +155,7 @@ def load_settings(settings_path):
             if value is None:
                 continue
 
-            group_overrides[setting_name] = value
+            group_overrides[final_setting_name] = value
 
         if len(group_overrides) > 0:
             plot_group_settings[group_name] = group_overrides

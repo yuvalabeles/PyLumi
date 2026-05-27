@@ -248,6 +248,10 @@ def save_peaks_periods_tables_to_excel(
                 "bg_color": "#F9EEED",
                 "align": "center",
                 "valign": "vcenter",
+                "top": 1,
+                "bottom": 1,
+                "top_color": "#D9D9D9",
+                "bottom_color": "#D9D9D9",
             })
 
             average_label_format = workbook.add_format({
@@ -321,6 +325,31 @@ def save_peaks_periods_tables_to_excel(
                     value = row[col_name]
 
                     if pd.isna(value):
+                        if col_name == "average period":
+                            worksheet.merge_range(
+                                excel_row,
+                                col_idx,
+                                excel_row,
+                                col_idx + 1,
+                                "",
+                                average_period_format,
+                            )
+
+                        elif col_idx == 0:
+                            worksheet.write_blank(excel_row, col_idx, None, first_col_label_format)
+
+                        elif is_average_row:
+                            if str(col_name).startswith("Δ"):
+                                worksheet.write_blank(excel_row, col_idx, None, avg_row_period_format)
+                            else:
+                                worksheet.write_blank(excel_row, col_idx, None, average_fill_format)
+
+                        else:
+                            if str(col_name).startswith("Δ"):
+                                worksheet.write_blank(excel_row, col_idx, None, period_format)
+                            else:
+                                worksheet.write_blank(excel_row, col_idx, None, centered_format)
+
                         continue
 
                     if col_name == "average period":
