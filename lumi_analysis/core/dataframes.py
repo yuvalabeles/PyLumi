@@ -10,13 +10,16 @@ def create_sub_df(dfs_aligned, filenames, sample=None):
         "Time (days)": dfs_aligned[0]["Time (days)"],
     })
 
-    counts = pd.DataFrame({
-        filenames[i]: dfs_aligned[i]["counts/sec"]
-        for i in range(len(dfs_aligned))
-    })
+    counts = pd.DataFrame()
 
     for i in range(len(dfs_aligned)):
-        full_df[filenames[i]] = dfs_aligned[i]["counts/sec"].round(4)
+        counts_sec = pd.to_numeric(
+            dfs_aligned[i]["counts/sec"],
+            errors="coerce"  # Ensure numeric dtype across pandas versions and malformed values
+        )
+
+        counts[filenames[i]] = counts_sec
+        full_df[filenames[i]] = counts_sec.round(4)
 
     if sample != "Extra":
         full_df["counts/sec (avg)"] = counts.mean(axis=1).round(4)
@@ -24,24 +27,6 @@ def create_sub_df(dfs_aligned, filenames, sample=None):
         full_df = full_df.rename(columns={"Time (hr:min)": "Time"})
 
     return full_df
-
-
-def create_cell_population_avg_df(dfs_aligned):
-    # Create an average dataframe for cell population samples.
-    avg_df = pd.DataFrame({
-        "Date": dfs_aligned[0]["Date"],
-        "Time (hr:min)": dfs_aligned[0]["Time (hr:min)"],
-        "Time (days)": dfs_aligned[0]["Time (days)"],
-    })
-
-    counts = pd.DataFrame({
-        f"counts/sec {i}": dfs_aligned[i]["counts/sec"]
-        for i in range(len(dfs_aligned))
-    })
-
-    avg_df["counts/sec"] = counts.mean(axis=1)
-
-    return avg_df
 
 
 def create_condensed_df(
