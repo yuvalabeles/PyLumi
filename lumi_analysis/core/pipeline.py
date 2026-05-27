@@ -39,17 +39,13 @@ def validate_pipeline_config(config):
 
 
 def print_pipeline_summary(config, groups):
-    print("\nLumi Analysis pipeline")
-    print("----------------------")
+    print("\n" + ("-" * 22) + "\nLumi Analysis pipeline\n" + ("-" * 22))
     print(f"Input folder: {config['input_folder']}")
     print(f"Output folder: {config['output_folder']}")
     print(f"Replicates per group: {config['replicates_per_group']}")
     print(f"Noise threshold: {config.get('noise_max', 25)}")
     print(f"Remove noise: {config.get('remove_noise', True)}")
-    print(f"Max rows: {config.get('max_rows')}")
-    print(f"Max hours: {config.get('max_hours')}")
     print(f"Max days: {config.get('max_days')}")
-    print(f"Interval minutes: {config.get('interval_minutes', 10)}")
     print(f"CT start hour: {config.get('ct_start_hour', 0)}")
     print(f"Plot raw data: {config.get('plot_raw_data', False)}")
     print(f"Plot peaks: {config.get('plot_peaks', False)}")
@@ -143,7 +139,6 @@ def run_lumi_pipeline(config):
         input_folder=config["input_folder"],
         groups=groups,
         replicates_per_group=config["replicates_per_group"],
-        group_labels=config.get("group_labels"),
         save_file=config.get("save_file", True),
         suffix=config.get("file_suffix", "_Raw.csv"),
         output_folder=config["output_folder"],

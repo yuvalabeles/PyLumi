@@ -1,5 +1,7 @@
 from pathlib import Path
 
+import numpy as np
+
 
 def discover_raw_files(folder_path, extension=".csv", suffix_to_remove="_Raw"):
     folder = Path(folder_path)
@@ -31,11 +33,14 @@ def discover_raw_files(folder_path, extension=".csv", suffix_to_remove="_Raw"):
 
 def print_groups(groups):
     print("\nGenerated groups:")
+    max_len = 0
+    for group_name in list(groups.keys()):
+        max_len = max(len(group_name), max_len)
 
     for group_name, files in groups.items():
-        print(f"{group_name}:")
-        for file_name in files:
-            print(f"    {file_name}")
+        spaces = (max_len - len(group_name)) + 4
+        spaces = " " * spaces
+        print(f"{group_name}:", spaces, np.array(files))
 
 
 def create_fixed_size_groups(
@@ -51,7 +56,7 @@ def create_fixed_size_groups(
     groups = {}
 
     full_group_count = len(file_names) // replicates_per_group
-    leftover_count = len(file_names) % replicates_per_group
+    # leftover_count = len(file_names) % replicates_per_group
 
     if sample_tags is None:
         sample_tags = []

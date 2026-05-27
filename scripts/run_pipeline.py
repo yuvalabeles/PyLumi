@@ -66,5 +66,5 @@ if __name__ == "__main__":
         print(f"    {group_name}")
 
     if result.condensed_df is not None:
-        print("\nCondensed dataframe preview:")
+        print("\nData preview:")
         print(result.condensed_df.head())

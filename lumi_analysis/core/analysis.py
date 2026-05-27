@@ -22,7 +22,6 @@ def build_file_paths(input_folder, file_names, suffix="_Raw.csv"):
 def run_analysis(
     input_folder,
     groups,
-    group_labels=None,
     save_file=True,
     suffix="_Raw.csv",
     output_folder=None,
@@ -44,8 +43,6 @@ def run_analysis(
     group_labels = list(groups.keys())
 
     for group_name, file_names in groups.items():
-        print(f"[*] Analysing group: {group_name}, from: {file_names}")
-
         paths = build_file_paths(
             input_folder=input_folder,
             file_names=file_names,
