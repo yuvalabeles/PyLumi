@@ -1,6 +1,6 @@
 import numpy as np
 
-from lumi_analysis.core.validation import assert_interval_jumps
+from lumi_analysis.core.validation import assert_group_interval_jumps
 
 
 def remove_initial_noise(
@@ -35,10 +35,12 @@ def preprocess_replicates(
     noise_max,
     remove_noise=True,
     keep_all_rows=False,
+    group_name=None,
+    interval_minutes=10,
 ):
     processed_dfs = []
 
-    for file_num, df in enumerate(dfs):
+    for df in dfs:
         df_processed = remove_initial_noise(
             df=df,
             noise_max=noise_max,
@@ -46,13 +48,14 @@ def preprocess_replicates(
             keep_all_rows=keep_all_rows,
         )
 
-        df_processed = assert_interval_jumps(
-            df_processed,
-            filenames,
-            file_num,
-        )
-
         processed_dfs.append(df_processed)
+
+    processed_dfs = assert_group_interval_jumps(
+        dfs_no_noise=processed_dfs,
+        filenames=filenames,
+        group_name=group_name,
+        interval_minutes=interval_minutes,
+    )
 
     return processed_dfs
 
@@ -64,7 +67,6 @@ def crop_replicates_tail(
     max_days=None,
     interval_minutes=10,
 ):
-    # Crop all replicate dataframes to the same requested length.
     active_limits = [
         value is not None
         for value in [max_rows, max_hours, max_days]

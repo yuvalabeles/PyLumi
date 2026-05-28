@@ -36,6 +36,8 @@ def analyse_group(
         noise_max=noise_max,
         remove_noise=remove_noise,
         keep_all_rows=keep_all_rows,
+        group_name=group_name,
+        interval_minutes=interval_minutes,
     )
 
     aligned_dfs = assert_interval_overlaps(processed_dfs)
