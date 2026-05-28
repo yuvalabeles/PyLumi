@@ -57,10 +57,6 @@ config = load_settings(SETTINGS_PATH)
 
 
 if __name__ == "__main__":
-    # print("[green]Success:[/green] file loaded correctly")
-    # print("[yellow]Warning:[/yellow] missing optional setting")
-    # print("[red]Error:[/red] failed to process file")
-
     result = run_lumi_pipeline(config)
 
     print("\n[green]Success:[/green] pipeline finished successfully.")

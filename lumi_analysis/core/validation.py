@@ -154,12 +154,12 @@ def assert_group_interval_jumps(
     completed_dfs = []
 
     for file_num, df in enumerate(prepared_dfs):
-        print("\n" + 27 * "-")
-        print(
-            f"Validating data for file "
-            f"[bold spring_green3]{filenames[file_num]}[/bold spring_green3]"
-        )
-        print(27 * "-")
+        # print("\n" + 27 * "-")
+        # print(
+        #     f"Validating data for file "
+        #     f"[bold spring_green3]{filenames[file_num]}[/bold spring_green3]"
+        # )
+        # print(27 * "-")
 
         missing_indices_to_fill = sorted(fill_missing_by_file[file_num])
 
@@ -239,7 +239,8 @@ def assert_group_interval_jumps(
 
                 print(
                     f"[cyan]Completed missing interval[/cyan] at "
-                    f"[bold]{missing_datetime.strftime('%m/%d/%Y %H:%M')}[/bold]."
+                    f"[bold]{missing_datetime.strftime('%m/%d/%Y %H:%M')}[/bold], on file "
+                    f"[bold spring_green3]{filenames[file_num]}[/bold spring_green3]"
                 )
 
         completed_dfs.append(

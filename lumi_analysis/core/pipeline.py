@@ -53,6 +53,7 @@ def print_pipeline_summary(config, groups):
     print("\nGroups:")
     for group_name, files in groups.items():
         print(f"{group_name}: {files}")
+    print()
 
 
 def get_group_plot_setting(config, group_name, setting_name, default=None):
