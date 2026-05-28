@@ -321,7 +321,8 @@ def plot_raw_replicates(
             zorder=5,
         )
 
-        if plot_peaks and show_average_peaks:
+        # Average peak X markers
+        if show_average_peaks:
             average_peak_color = average_line.get_color()
 
             plot_peaks_for_signal(
@@ -329,7 +330,7 @@ def plot_raw_replicates(
                 time=time,
                 signal=average_y,
                 color=average_peak_color,
-                show_text=show_average_peaks_txt,
+                show_text=False,
                 min_peak_distance_hours=min_peak_distance_hours,
                 prominence=peak_prominence,
                 marker=peak_marker,
@@ -339,6 +340,27 @@ def plot_raw_replicates(
                 text_dy=peak_txt_dy,
                 text_fontsize=peak_txt_fontsize,
                 zorder=7,
+            )
+
+        # Average peak text labels
+        if show_average_peaks_txt:
+            average_peak_color = average_line.get_color()
+
+            plot_peaks_for_signal(
+                ax=ax,
+                time=time,
+                signal=average_y,
+                color=average_peak_color,
+                show_text=True,
+                min_peak_distance_hours=min_peak_distance_hours,
+                prominence=peak_prominence,
+                marker="",
+                markersize=0,
+                markeredgewidth=0,
+                text_dx=peak_txt_dx,
+                text_dy=peak_txt_dy,
+                text_fontsize=peak_txt_fontsize,
+                zorder=8,
             )
 
     # -------------------------------------------------------------------------
