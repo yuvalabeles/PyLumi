@@ -1,7 +1,6 @@
 from pathlib import Path
 import subprocess
 import sys
-from rich import print
 
 REQUIRED_PACKAGES = {
     "pandas": "pandas",
@@ -11,6 +10,7 @@ REQUIRED_PACKAGES = {
     "xlsxwriter": "xlsxwriter",
     "scipy": "scipy",
     "statsmodels": "statsmodels",
+    "rich": "rich"
 }
 
 
@@ -41,6 +41,7 @@ ensure_requirements()
 
 from lumi_analysis.core.pipeline import run_lumi_pipeline
 from scripts.load_settings import load_settings
+from rich import print
 
 
 # ==================================================================================================================== #
