@@ -1,5 +1,5 @@
 from pathlib import Path
-
+from rich import print
 import numpy as np
 
 
@@ -7,10 +7,10 @@ def discover_raw_files(folder_path, extension=".csv", suffix_to_remove="_Raw"):
     folder = Path(folder_path)
 
     if not folder.exists():
-        raise FileNotFoundError(f"Folder does not exist: {folder}")
+        raise FileNotFoundError(f"Input folder for which you provided a path in settings.xlsx, does not exist: {folder}")
 
     if not folder.is_dir():
-        raise NotADirectoryError(f"Path is not a folder: {folder}")
+        raise NotADirectoryError(f"Path you provided in settings.xlsx is not a folder: {folder}")
 
     files = [
         file for file in folder.iterdir()
@@ -32,7 +32,7 @@ def discover_raw_files(folder_path, extension=".csv", suffix_to_remove="_Raw"):
 
 
 def print_groups(groups):
-    print("\nGenerated groups:")
+    print("\n[green]Success:[/green] Generated groups:")
     max_len = 0
     for group_name in list(groups.keys()):
         max_len = max(len(group_name), max_len)
@@ -41,6 +41,7 @@ def print_groups(groups):
         spaces = (max_len - len(group_name)) + 4
         spaces = " " * spaces
         print(f"{group_name}:", spaces, np.array(files))
+    print()
 
 
 def create_fixed_size_groups(
@@ -51,12 +52,11 @@ def create_fixed_size_groups(
     extra_group_name="Extra",
 ):
     if replicates_per_group <= 0:
-        raise ValueError("replicates_per_group must be greater than 0")
+        raise ValueError("The number of replicates per group must be greater than 0. Please adjust the settings.xlsx file.")
 
     groups = {}
 
     full_group_count = len(file_names) // replicates_per_group
-    # leftover_count = len(file_names) % replicates_per_group
 
     if sample_tags is None:
         sample_tags = []
@@ -80,14 +80,14 @@ def create_fixed_size_groups(
         groups[extra_group_name] = extra_files
 
     if extra_files and not include_extra_group:
-        print("\nWarning: Some files were not assigned to any group:")
+        print("\n[yellow]Warning:[/yellow] some data files were not assigned to any group:")
         for file_name in extra_files:
             print(f"    {file_name}")
 
     if len(sample_tags) > full_group_count:
         missing_tags = sample_tags[full_group_count:]
 
-        print("\nWarning: Some sample tags did not receive any files:")
+        print("\n[yellow]Warning:[/yellow] some sample tags did not receive any files:")
         for tag in missing_tags:
             print(f"    {tag}")
 

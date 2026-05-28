@@ -1,7 +1,7 @@
 from pathlib import Path
 import subprocess
 import sys
-
+from rich import print
 
 REQUIRED_PACKAGES = {
     "pandas": "pandas",
@@ -56,15 +56,18 @@ config = load_settings(SETTINGS_PATH)
 
 
 if __name__ == "__main__":
+    # print("[green]Success:[/green] file loaded correctly")
+    # print("[yellow]Warning:[/yellow] missing optional setting")
+    # print("[red]Error:[/red] failed to process file")
 
     result = run_lumi_pipeline(config)
 
-    print("\nPipeline finished successfully.")
+    print("\n[green]Success:[/green] pipeline finished successfully.")
 
-    print("\nGroups analysed:")
+    print("\n[green]Groups analysed:")
     for group_name in result.group_results.keys():
         print(f"    {group_name}")
 
     if result.condensed_df is not None:
-        print("\nData preview:")
+        print("\n[green]Data preview:")
         print(result.condensed_df.head())
