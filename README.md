@@ -1,6 +1,6 @@
 # PyLumi 
 
-PyLumi is a Python pipeline for analysing Lumi luminescence experiments.
+PyLumi is a Python pipeline for processing Lumi luminescence experiments.
 
 The pipeline receives raw CSV files exported from Lumi software and performs:
 
