@@ -20,6 +20,7 @@ DISPLAY_NAMES = {
     "output_folder": "Output folder",
     "replicates_per_group": "Replicates per group",
     "sample_tags": "Sample names",
+    "disabled_replicates": "Disabled replicates",
     "include_extra_group": "Include all files",
     "noise_max": "Maximum background noise",
     "remove_noise": "Remove background noise",
@@ -46,7 +47,6 @@ DISPLAY_NAMES = {
     "override_y_limit": "Y-axis limit",
     "override_description": "Plot description",
     "override_peak_txt_dy": "Peak label vertical offset",
-    "override_mean_replicate_cols": "Replicates to disable",
     "override_visible_replicate_cols": "Replicates to hide",
 }
 
@@ -105,6 +105,19 @@ SECTIONS = [
                     "These names will be assigned to groups according to the detected file order."
                     "\n\nIf no labels are provided, the groups will be named automatically: "
                     "\"Unlabeled_1\", \"Unlabeled_2\", \"Unlabeled_3\", ..."
+                ),
+            },
+            {
+                "name": "disabled_replicates",
+                "default": "[]",
+                "allowed": 'List of replicate names. \n\nExample: ["1a", "2b", "3c"]',
+                "description": (
+                    "Choose specific replicates to disable from the analysis."
+                    "\n\nDisabled replicates are excluded from the analysis by replicate name."
+                    "\n\nNOTE #1: each replicate name must be written inside quotes (\" \")."
+                    "\nNOTE #2: write replicate names without suffixes."
+                    "\n\nCorrect example: [\"1a\", \"2b\"]"
+                    "\nIncorrect example: [\"1a_Raw.csv\", \"2b_Raw.csv\"]"
                 ),
             },
             {
@@ -381,21 +394,6 @@ SECTIONS = [
                 "default": "[]",
                 "allowed": "List with one value per group, or None for no override. \n\nExample: [20, None, None, 35]",
                 "description": "This value is used to adjust the position of the peak text labels.",
-            },
-            {
-                "name": "override_mean_replicate_cols",
-                "default": "[]",
-                "allowed": "Examples:"
-                           "\n\n• Single replicate:"
-                           "\n[None, None, [\"2a\"], None]"
-                           "\n\n• Multiple replicates:"
-                           "\n[None, [\"1a\", \"1b\"], [\"2c\"], None]"
-                           "\n\n• INCORRECT:"
-                           "\n[None, None, \"2a\", None]",
-                "description": "For each group choose specific replicates to disable from the average signal."
-                               "\n\nNOTE #1: each value in the outer list has to be either a list or None."
-                               "\nNOTE #2: each replicate has to be written inside quotes (\" \")."
-                               "\nNOTE #3: disabling a replicate also removes it from the plot.",
             },
             {
                 "name": "override_visible_replicate_cols",

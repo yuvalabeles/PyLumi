@@ -80,7 +80,10 @@ def plot_pipeline_results(config, analysis_result):
             title=f"{group_name}",
             save_path=f"{config['output_folder']}/Plots/{group_name}.png",
 
-            mean_replicate_cols=get_group_plot_setting(config, group_name, "mean_replicate_cols", None),
+            mean_replicate_cols=config.get(
+                "disabled_replicates",
+                []
+            ),
             visible_replicate_cols=get_group_plot_setting(config, group_name, "visible_replicate_cols", None),
             replicate_display_mode=get_group_plot_setting(config, group_name, "replicate_display_mode", "replicates_and_mean"),
             recompute_mean=get_group_plot_setting(config, group_name, "recompute_mean", True),

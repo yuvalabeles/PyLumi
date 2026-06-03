@@ -8,7 +8,6 @@ GROUP_OVERRIDE_SETTINGS = {
     "override_y_limit": "y_limit",
     "override_description": "description",
     "override_peak_txt_dy": "peak_txt_dy",
-    "override_mean_replicate_cols": "mean_replicate_cols",
     "override_visible_replicate_cols": "visible_replicate_cols",
 }
 
@@ -64,7 +63,6 @@ def parse_override_list(value):
     if text == "":
         return []
 
-    # Replace empty entries with None
     text = text.replace(", ,", ", None,")
     text = text.replace(",  ,", ", None,")
     text = text.replace("[ ,", "[None,")
@@ -112,22 +110,15 @@ def load_settings(settings_path):
             column=VALUE_COL
         ).value
 
-        # GROUP OVERRIDE NAMES
         if config_key == "override_group_names":
             override_lists[config_key] = parse_override_list(raw_value)
             continue
 
-        # GROUP OVERRIDE SETTINGS
         if config_key in GROUP_OVERRIDE_SETTINGS:
             override_lists[config_key] = parse_override_list(raw_value)
             continue
 
-        # REGULAR SETTINGS
         config[config_key] = parse_setting_value(raw_value)
-
-    # ------------------------------------------------------------------
-    # BUILD plot_group_settings
-    # ------------------------------------------------------------------
 
     group_names = override_lists.get("override_group_names", [])
 
@@ -151,7 +142,6 @@ def load_settings(settings_path):
 
             value = values_list[group_index]
 
-            # None means "no override"
             if value is None:
                 continue
 
