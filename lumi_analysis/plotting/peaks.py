@@ -45,15 +45,15 @@ def plot_peaks_for_signal(
     show_text=False,
     min_peak_distance_hours=20,
     prominence=None,
-    marker="x",
-    markersize=7,
-    markeredgewidth=1.5,
+    # marker="x",
+    # markersize=7,
+    # markeredgewidth=1.5,
     text_dx=2,
     text_dy=0,
     text_fontsize=8,
     zorder=6,
 ):
-    # Plot peak markers and optional peak-time labels for one signal.
+    # Plot peak vertical grid lines and optional peak-time labels for one signal.
     time = np.asarray(time, dtype=float)
     signal = np.asarray(signal, dtype=float)
 
@@ -67,28 +67,36 @@ def plot_peaks_for_signal(
     if len(peak_indices) == 0:
         return peak_indices
 
-    ax.plot(
-        time[peak_indices],
-        signal[peak_indices],
-        linestyle="None",
-        marker=marker,
-        markersize=markersize,
-        markeredgewidth=markeredgewidth,
-        color=color,
-        zorder=zorder,
-    )
+    for idx in peak_indices:
+        peak_time = float(time[idx])
+
+        ax.axvline(
+            x=peak_time,
+            color=color,
+            linewidth=0.8,
+            alpha=0.75,
+            linestyle="--",
+            zorder=zorder,
+        )
 
     if show_text:
+        y_min, y_max = ax.get_ylim()
+        text_y = y_max - 0.04 * (y_max - y_min)
+
         for idx in peak_indices:
+            peak_time = float(time[idx])
+
             ax.text(
-                float(time[idx]) + text_dx,
-                float(signal[idx]) + text_dy,
-                f"{float(time[idx]):.1f}",
+                peak_time + text_dx,
+                text_y + text_dy,
+                f"{peak_time:.1f}",
                 fontsize=text_fontsize,
-                alpha=0.8,
+                alpha=0.85,
                 fontweight="bold",
                 color=color,
                 zorder=zorder + 1,
+                ha="left",
+                va="top",
             )
 
     return peak_indices
