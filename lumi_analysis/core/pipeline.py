@@ -43,6 +43,7 @@ def print_pipeline_summary(config, groups):
     print(f"Input folder: {config['input_folder']}")
     print(f"Output folder: {config['output_folder']}")
     print(f"Replicates per group: {config['replicates_per_group']}")
+    print(f"Disabled replicates: {config.get('disabled_replicates', [])}")
     print(f"Noise threshold: {config.get('noise_max', 25)}")
     print(f"Remove noise: {config.get('remove_noise', True)}")
     print(f"Max days: {config.get('max_days')}")
@@ -57,8 +58,6 @@ def print_pipeline_summary(config, groups):
 
 
 def get_group_plot_setting(config, group_name, setting_name, default=None):
-    # Return group-specific plotting setting if provided,
-    # otherwise fall back to the global config setting.
     group_settings = config.get("plot_group_settings", {})
     current_group_settings = group_settings.get(group_name, {})
 
@@ -72,6 +71,8 @@ def plot_pipeline_results(config, analysis_result):
     if not config.get("plot_raw_data", False):
         return
 
+    disabled_replicates = config.get("disabled_replicates", [])
+
     for group_name, group_result in analysis_result["group_results"].items():
         group_df = group_result["full_df"]
 
@@ -80,10 +81,7 @@ def plot_pipeline_results(config, analysis_result):
             title=f"{group_name}",
             save_path=f"{config['output_folder']}/Plots/{group_name}.png",
 
-            mean_replicate_cols=config.get(
-                "disabled_replicates",
-                []
-            ),
+            mean_replicate_cols=disabled_replicates,
             visible_replicate_cols=get_group_plot_setting(config, group_name, "visible_replicate_cols", None),
             replicate_display_mode=get_group_plot_setting(config, group_name, "replicate_display_mode", "replicates_and_mean"),
             recompute_mean=get_group_plot_setting(config, group_name, "recompute_mean", True),
@@ -128,6 +126,11 @@ def plot_pipeline_results(config, analysis_result):
 def run_lumi_pipeline(config):
     validate_pipeline_config(config)
 
+    disabled_replicates = config.get("disabled_replicates", [])
+
+    if disabled_replicates is None:
+        disabled_replicates = []
+
     groups = create_groups_from_folder(
         folder_path=config["input_folder"],
         replicates_per_group=config["replicates_per_group"],
@@ -153,6 +156,7 @@ def run_lumi_pipeline(config):
         max_days=config.get("max_days"),
         interval_minutes=config.get("interval_minutes", 10),
         ct_start_hour=config.get("ct_start_hour", 0),
+        disabled_replicates=disabled_replicates,
     )
 
     plot_pipeline_results(config, analysis_result)
@@ -162,12 +166,28 @@ def run_lumi_pipeline(config):
             analysis_result=analysis_result,
             config=config,
             get_group_setting=get_group_plot_setting,
+            disabled_replicates=[],
         )
 
         save_peaks_periods_tables_to_excel(
             tables=peaks_periods_tables,
             output_path=Path(config["output_folder"]) / "peaks_periods_tables.xlsx",
         )
+
+        filtered_analysis_result = analysis_result.get("without_disabled_replicates")
+
+        if filtered_analysis_result is not None:
+            peaks_periods_tables_without_disabled = create_all_group_peaks_periods_tables(
+                analysis_result=filtered_analysis_result,
+                config=config,
+                get_group_setting=get_group_plot_setting,
+                disabled_replicates=disabled_replicates,
+            )
+
+            save_peaks_periods_tables_to_excel(
+                tables=peaks_periods_tables_without_disabled,
+                output_path=Path(config["output_folder"]) / "peaks_periods_tables - without disabled replicates.xlsx",
+            )
 
     return LumiAnalysisResult(
         group_results=analysis_result["group_results"],

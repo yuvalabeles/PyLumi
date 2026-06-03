@@ -19,7 +19,6 @@ def create_signal_peaks_periods_row(
     decimals=2,
     period_as_text=True,
 ):
-    # Create one table row containing peak times and periods for a single signal.
     time = np.asarray(time, dtype=float)
     signal = np.asarray(signal, dtype=float)
 
@@ -39,7 +38,6 @@ def create_signal_peaks_periods_row(
     periods = []
 
     for i, peak_time in enumerate(peak_times, start=1):
-        # row[f"peak {i}"] = round(float(peak_time), decimals)
         peak = round(float(peak_time), decimals)
         row[f"peak {i}"] = f"({peak})"
 
@@ -67,6 +65,7 @@ def create_group_peaks_periods_table(
     df,
     mean_replicate_cols=None,
     visible_replicate_cols=None,
+    disabled_replicates=None,
     mean_col=LUMI_AVERAGE_COLUMN,
     recompute_mean=True,
     time_col=None,
@@ -78,14 +77,37 @@ def create_group_peaks_periods_table(
     decimals=2,
     period_as_text=True,
 ):
-    # Create a peaks/periods table for one Lumi group.
     all_replicate_cols = get_lumi_replicate_columns(df, mean_col=mean_col)
 
+    if disabled_replicates is None:
+        disabled_replicates = []
+
+    disabled_replicates = [
+        col for col in disabled_replicates
+        if col in all_replicate_cols
+    ]
+
     if mean_replicate_cols is None:
-        mean_replicate_cols = all_replicate_cols
+        mean_replicate_cols = [
+            col for col in all_replicate_cols
+            if col not in disabled_replicates
+        ]
 
     if visible_replicate_cols is None:
-        visible_replicate_cols = all_replicate_cols
+        visible_replicate_cols = [
+            col for col in all_replicate_cols
+            if col not in disabled_replicates
+        ]
+    else:
+        visible_replicate_cols = [
+            col for col in visible_replicate_cols
+            if col not in disabled_replicates
+        ]
+
+    if len(mean_replicate_cols) == 0:
+        raise ValueError(
+            "Cannot create average peak table because all replicates were disabled."
+        )
 
     time = get_lumi_time_axis(
         df=df,
@@ -149,9 +171,12 @@ def create_all_group_peaks_periods_tables(
     analysis_result,
     config,
     get_group_setting,
+    disabled_replicates=None,
 ):
-    # Create one peaks/periods table per group.
     tables = {}
+
+    if disabled_replicates is None:
+        disabled_replicates = []
 
     for group_name, group_result in analysis_result["group_results"].items():
         group_df = group_result["full_df"]
@@ -160,6 +185,7 @@ def create_all_group_peaks_periods_tables(
             df=group_df,
             mean_replicate_cols=get_group_setting(config, group_name, "mean_replicate_cols", None),
             visible_replicate_cols=get_group_setting(config, group_name, "visible_replicate_cols", None),
+            disabled_replicates=disabled_replicates,
             recompute_mean=get_group_setting(config, group_name, "recompute_mean", True),
             start_ct=config.get("ct_start_hour", 0),
             interval_minutes=config.get("interval_minutes", 10),
@@ -176,7 +202,6 @@ def create_all_group_peaks_periods_tables(
 
 
 def _get_max_peak_number(columns):
-    # Extract the largest peak number from columns like "peak 1", "peak 2", etc.
     max_peak_number = 0
 
     for col in columns:
