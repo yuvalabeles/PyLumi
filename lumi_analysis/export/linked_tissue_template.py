@@ -332,9 +332,10 @@ def plot_linked_tissue_traces(
     handles, labels = axes[0].get_legend_handles_labels()
 
     fig.suptitle(
-        title,
+        title.title(),
         y=0.98,
         x=0.585,
+        fontsize=15
     )
 
     fig.legend(
@@ -453,7 +454,7 @@ if __name__ == "__main__":
         output_path="plots/linked_tissue_traces.png",
         title="Mean traces by tissue",
         tissue_order=["Kidney", "Lung", "Liver"],
-        y_upper_limits=[300, 900, 500],
+        y_upper_limits=[200, 850, 400],
     )
 
     peaks_data = compute_linked_tissue_peaks(
