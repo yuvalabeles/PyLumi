@@ -21,7 +21,7 @@ DISPLAY_NAMES = {
     "replicates_per_group": "Replicates per group",
     "sample_tags": "Sample names",
     "disabled_replicates": "Disabled replicates",
-    "include_extra_group": "Include all files",
+    "include_extra_group": "Include extra files",
     "noise_max": "Maximum background noise",
     "remove_noise": "Remove background noise",
     "extension": "File extension",
@@ -130,96 +130,6 @@ SECTIONS = [
                     "\n•  True = analyse leftover files as an additional group named Extra."
                 ),
                 "validation": ["True", "False"],
-            },
-        ],
-    },
-    {
-        "title": "ANALYSIS SETTINGS",
-        "settings": [
-            {
-                "name": "noise_max",
-                "default": 25,
-                "allowed": "Number. \n\nExample: 25",
-                "description": (
-                    "The minimum counts/sec value that marks the beginning of the real signal."
-                    "All consecutive rows from the start, with counts below this threshold, are treated as pre-sample noise."
-                ),
-            },
-            {
-                "name": "remove_noise",
-                "default": True,
-                "allowed": "True / False",
-                "description": (
-                    "•  True = subtract the average pre-sample noise from the signal."
-                    "\n•  False = keep the signal without subtracting that background."
-                ),
-                "validation": ["True", "False"],
-            },
-        ],
-    },
-    {
-        "title": "FILE SETTINGS",
-        "settings": [
-            {
-                "name": "extension",
-                "default": ".csv",
-                "allowed": "File extension. \n\nExample .csv",
-                "description": (
-                    "Usually this should not be changed. Change only if the Lumi output files use a different file extension."
-                ),
-            },
-            {
-                "name": "suffix_to_remove",
-                "default": "_Raw",
-                "allowed": "Text suffix. \n\nExample: _Raw",
-                "description": (
-                    "Usually this should not be changed. This suffix is removed from raw file names when creating cleaner names."
-                ),
-            },
-            {
-                "name": "file_suffix",
-                "default": "_Raw.csv",
-                "allowed": "Text suffix. \n\nExample: _Raw.csv",
-                "description": (
-                    "Usually this should not be changed. Change only if the Lumi output files use different names."
-                ),
-            },
-        ],
-    },
-    {
-        "title": "SAVING",
-        "settings": [
-            {
-                "name": "save_file",
-                "default": True,
-                "allowed": "True / False",
-                "description": (
-                    "•  True = save processed files to the given output folder."
-                    "\n•  False = run analysis without saving files."
-                ),
-                "validation": ["True", "False"],
-            },
-        ],
-    },
-    {
-        "title": "DATA LENGTH / TAIL CUTTING",
-        "settings": [
-            {
-                "name": "interval_minutes",
-                "default": 10,
-                "allowed": "Positive number. \n\nExample: 10",
-                "description": "The length of the sampling interval in minutes. "
-                               "\n\nNOTE: Lumi's interval by default is 10 minutes.",
-            },
-            {
-                "name": "max_days",
-                "default": None,
-                "allowed": "Positive number, or None.",
-                "description": (
-                    "Limit analysis to the first N days. "
-                    "Leave None for no limit, or choose a positive number N for number of days to analyze."
-                    "\n\nThis feature is useful to cut the tail of the data if it isn't significant to the analysis."
-                ),
             },
         ],
     },
@@ -355,6 +265,96 @@ SECTIONS = [
                 "default": 2,
                 "allowed": "Non-negative integer. \n\nExample: 2",
                 "description": "Number of decimals in peak and period values.",
+            },
+        ],
+    },
+    {
+        "title": "DATA LENGTH / TAIL CUTTING",
+        "settings": [
+            {
+                "name": "interval_minutes",
+                "default": 10,
+                "allowed": "Positive number. \n\nExample: 10",
+                "description": "The length of the sampling interval in minutes. "
+                               "\n\nNOTE: Lumi's interval by default is 10 minutes.",
+            },
+            {
+                "name": "max_days",
+                "default": None,
+                "allowed": "Positive number, or None.",
+                "description": (
+                    "Limit analysis to the first N days. "
+                    "Leave None for no limit, or choose a positive number N for number of days to analyze."
+                    "\n\nThis feature is useful to cut the tail of the data if it isn't significant to the analysis."
+                ),
+            },
+        ],
+    },
+    {
+        "title": "ANALYSIS SETTINGS",
+        "settings": [
+            {
+                "name": "noise_max",
+                "default": 25,
+                "allowed": "Number. \n\nExample: 25",
+                "description": (
+                    "The minimum counts/sec value that marks the beginning of the real signal."
+                    "All consecutive rows from the start, with counts below this threshold, are treated as pre-sample noise."
+                ),
+            },
+            {
+                "name": "remove_noise",
+                "default": True,
+                "allowed": "True / False",
+                "description": (
+                    "•  True = subtract the average pre-sample noise from the signal."
+                    "\n•  False = keep the signal without subtracting that background."
+                ),
+                "validation": ["True", "False"],
+            },
+        ],
+    },
+    {
+        "title": "FILE SETTINGS",
+        "settings": [
+            {
+                "name": "extension",
+                "default": ".csv",
+                "allowed": "File extension. \n\nExample .csv",
+                "description": (
+                    "Usually this should not be changed. Change only if the Lumi output files use a different file extension."
+                ),
+            },
+            {
+                "name": "suffix_to_remove",
+                "default": "_Raw",
+                "allowed": "Text suffix. \n\nExample: _Raw",
+                "description": (
+                    "Usually this should not be changed. This suffix is removed from raw file names when creating cleaner names."
+                ),
+            },
+            {
+                "name": "file_suffix",
+                "default": "_Raw.csv",
+                "allowed": "Text suffix. \n\nExample: _Raw.csv",
+                "description": (
+                    "Usually this should not be changed. Change only if the Lumi output files use different names."
+                ),
+            },
+        ],
+    },
+    {
+        "title": "SAVING",
+        "settings": [
+            {
+                "name": "save_file",
+                "default": True,
+                "allowed": "True / False",
+                "description": (
+                    "•  True = save processed files to the given output folder."
+                    "\n•  False = run analysis without saving files."
+                ),
+                "validation": ["True", "False"],
             },
         ],
     },
