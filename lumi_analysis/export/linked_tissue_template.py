@@ -188,9 +188,10 @@ def compute_linked_tissue_peaks(
     data,
     min_peak_distance_hours=20,
     prominence=None,
-    peak_number=1,
+    min_peak_time=None,
 ):
     # Compute peak time for each experiment/tissue/mouse mean signal.
+    # Select the first detected peak after min_peak_time, if min_peak_time is given.
 
     peak_records = []
 
@@ -225,11 +226,18 @@ def compute_linked_tissue_peaks(
 
         peak_indices = np.asarray(peak_indices_array)
 
-        if len(peak_indices) < peak_number:
+        if min_peak_time is not None:
+            peak_indices = np.asarray([
+                int(index)
+                for index in peak_indices
+                if time_series.iloc[int(index)] >= min_peak_time
+            ])
+
+        if len(peak_indices) == 0:
             peak_time = np.nan
             peak_value = np.nan
         else:
-            selected_peak_index = int(peak_indices[peak_number - 1])
+            selected_peak_index = int(peak_indices[0])
             peak_time = time_series.iloc[selected_peak_index]
             peak_value = signal_series.iloc[selected_peak_index]
 
@@ -247,7 +255,7 @@ def compute_linked_tissue_peaks(
 def plot_linked_tissue_traces(
     data,
     output_path,
-    title="Mean traces by tissue",
+    title="Mean signal by tissue",
     tissue_order=None,
     y_upper_limits=None,
     figsize=None,
@@ -423,7 +431,7 @@ def plot_linked_tissue_peak_times(
 
     ax.set_xlabel("Peak time")
     ax.set_ylabel("Tissue")
-    ax.set_title(title)
+    ax.set_title(title.title())
     ax.grid(True, axis="x", alpha=0.3)
 
     ax.legend(frameon=False)
@@ -461,7 +469,7 @@ if __name__ == "__main__":
         data=data_tissue,
         min_peak_distance_hours=20,
         prominence=None,
-        peak_number=1,
+        min_peak_time=32,
     )
 
     plot_linked_tissue_peak_times(
