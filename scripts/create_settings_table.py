@@ -92,8 +92,8 @@ SECTIONS = [
                 "allowed": "Positive integer. \n\nExample: 3",
                 "description": (
                     "How many raw files belong to each sample/group."
-                    "\nNote that the code assumes the replicates are saved consecutively."
-                    "\n\nFor example, if each sample has 3 replicate files, use 3."
+                    "\nThey are grouped by their order in your folder."
+                    "\n\nFor example, if each sample has 4 replicate files, use 4."
                 ),
             },
             {
@@ -103,8 +103,8 @@ SECTIONS = [
                 "description": (
                     "Optional labels for each group of replicates. "
                     "These names will be assigned to groups according to the detected file order."
-                    "\n\nIf no labels are provided, the groups will be named automatically: "
-                    "\"Unlabeled_1\", \"Unlabeled_2\", \"Unlabeled_3\", ..."
+                    # "\n\nIf no labels are provided, the groups will be named automatically: "
+                    # "\"Unlabeled_1\", \"Unlabeled_2\", \"Unlabeled_3\", ..."
                 ),
             },
             {
@@ -113,9 +113,7 @@ SECTIONS = [
                 "allowed": 'List of replicate names. \n\nExample: ["1a", "2b", "3c"]',
                 "description": (
                     "Choose specific replicates to disable from the analysis."
-                    "\n\nDisabled replicates are excluded from the analysis by replicate name."
-                    "\n\nNOTE #1: each replicate name must be written inside quotes (\" \")."
-                    "\nNOTE #2: write replicate names without suffixes."
+                    "\n\nNOTE: each replicate name must be written inside quotes (\" \")."
                     "\n\nCorrect example: [\"1a\", \"2b\"]"
                     "\nIncorrect example: [\"1a_Raw.csv\", \"2b_Raw.csv\"]"
                 ),
@@ -125,7 +123,7 @@ SECTIONS = [
                 "default": False,
                 "allowed": "True / False",
                 "description": (
-                    "Handle the extra files that don't complete a full group of replicates: "
+                    "Handle the extra files that don't complete a full group: "
                     "\n\n•  False = ignore leftover files and print a message to the user."
                     "\n•  True = analyse leftover files as an additional group named Extra."
                 ),
@@ -250,6 +248,50 @@ SECTIONS = [
         ],
     },
     {
+        "title": "GROUP-SPECIFIC OVERRIDES",
+        "settings": [
+            {
+                "name": "override_group_names",
+                "default": "[]",
+                "allowed": 'List of group names. \nExample: ["Liver", "Lung"]',
+                "description": (
+                    "Use this section only when you want to limit Y-axis differently for specific groups."
+                    "For example, if group names are [\"Liver\", \"Lung\"], then [500, 700] means:"
+                    "Liver gets 500, and Lung gets 700."
+                    "\n\nNOTE: each group name MUST be in quotes (example: \"Liver\")."
+                    "Each position matches the group name in the same position."
+                ),
+            },
+            {
+                "name": "override_y_limit",
+                "default": "[]",
+                "allowed": "List with limits (number/range)."
+                           "\n\nExample: [500, (-100, 500)]",
+                "description":
+                    "\nWhen choosing a limit, maintain the same order in which you listed the groups."
+            },
+            # {
+            #     "name": "override_description",
+            #     "default": "[]",
+            #     "allowed": 'List with one value per group, or None for no override. \n\nExample: ["Exp. 1", None, None, None]',
+            #     "description": "See section: PLOTTING SETTINGS, setting: Plot description, for a detailed description.",
+            # },
+            # {
+            #     "name": "override_peak_txt_dy",
+            #     "default": "[]",
+            #     "allowed": "List with one value per group, or None for no override. \n\nExample: [20, None, None, 35]",
+            #     "description": "This value is used to adjust the position of the peak text labels.",
+            # },
+            # {
+            #     "name": "override_visible_replicate_cols",
+            #     "default": "[]",
+            #     "allowed": "See examples above.",
+            #     "description": "For each group choose specific replicates to hide from the plot."
+            #                    "\n\nNOTE: this does NOT exclude them from the calculation of the average signal.",
+            # },
+        ],
+    },
+    {
         "title": "PEAK/PERIOD TABLE SETTINGS",
         "settings": [
             {
@@ -260,12 +302,12 @@ SECTIONS = [
                                "\n•  False = do not create an Excel file for peaks + periods.",
                 "validation": ["True", "False"],
             },
-            {
-                "name": "peak_table_decimals",
-                "default": 2,
-                "allowed": "Non-negative integer. \n\nExample: 2",
-                "description": "Number of decimals in peak and period values.",
-            },
+            # {
+            #     "name": "peak_table_decimals",
+            #     "default": 2,
+            #     "allowed": "Non-negative integer. \n\nExample: 2",
+            #     "description": "Number of decimals in peak and period values.",
+            # },
         ],
     },
     {
@@ -314,35 +356,35 @@ SECTIONS = [
             },
         ],
     },
-    {
-        "title": "FILE SETTINGS",
-        "settings": [
-            {
-                "name": "extension",
-                "default": ".csv",
-                "allowed": "File extension. \n\nExample .csv",
-                "description": (
-                    "Usually this should not be changed. Change only if the Lumi output files use a different file extension."
-                ),
-            },
-            {
-                "name": "suffix_to_remove",
-                "default": "_Raw",
-                "allowed": "Text suffix. \n\nExample: _Raw",
-                "description": (
-                    "Usually this should not be changed. This suffix is removed from raw file names when creating cleaner names."
-                ),
-            },
-            {
-                "name": "file_suffix",
-                "default": "_Raw.csv",
-                "allowed": "Text suffix. \n\nExample: _Raw.csv",
-                "description": (
-                    "Usually this should not be changed. Change only if the Lumi output files use different names."
-                ),
-            },
-        ],
-    },
+    # {
+    #     "title": "FILE SETTINGS",
+    #     "settings": [
+    #         {
+    #             "name": "extension",
+    #             "default": ".csv",
+    #             "allowed": "File extension. \n\nExample .csv",
+    #             "description": (
+    #                 "Usually this should not be changed. Change only if the Lumi output files use a different file extension."
+    #             ),
+    #         },
+    #         {
+    #             "name": "suffix_to_remove",
+    #             "default": "_Raw",
+    #             "allowed": "Text suffix. \n\nExample: _Raw",
+    #             "description": (
+    #                 "Usually this should not be changed. This suffix is removed from raw file names when creating cleaner names."
+    #             ),
+    #         },
+    #         {
+    #             "name": "file_suffix",
+    #             "default": "_Raw.csv",
+    #             "allowed": "Text suffix. \n\nExample: _Raw.csv",
+    #             "description": (
+    #                 "Usually this should not be changed. Change only if the Lumi output files use different names."
+    #             ),
+    #         },
+    #     ],
+    # },
     {
         "title": "SAVING",
         "settings": [
@@ -355,52 +397,6 @@ SECTIONS = [
                     "\n•  False = run analysis without saving files."
                 ),
                 "validation": ["True", "False"],
-            },
-        ],
-    },
-    {
-        "title": "GROUP-SPECIFIC OVERRIDES",
-        "settings": [
-            {
-                "name": "override_group_names",
-                "default": "[]",
-                "allowed": 'List of group names. \nExample: ["Liver", "Kidney", "Lung"]',
-                "description": (
-                    "Use this section only when you want to override specific settings for specific groups."
-                    "\n\nImportant Notes:"
-                    "\nNOTE #1: write only the groups for which you want to override at least one setting."
-                    "\nNOTE #2: each group name MUST be in quotes (example: \"Liver\")."
-                    "\nNOTE #3: when overriding a setting, maintain the same order in which you listed the groups."
-                    "Each position matches the group name in the same position."
-                    "\n\nFor example, if group names are [\"Liver\", \"Kidney\", \"Lung\"], then [500, None, 700] means:"
-                    "\nLiver gets 500, Kidney gets no override, and Lung gets 700."
-                ),
-            },
-            {
-                "name": "override_y_limit",
-                "default": "[]",
-                "allowed": "List with one value (number/range) per group, or None for no override."
-                           "\n\nExample: [500, None, (-100, 500)]",
-                "description": "See section: PLOTTING SETTINGS, setting: Y-axis limit, for a detailed description.",
-            },
-            {
-                "name": "override_description",
-                "default": "[]",
-                "allowed": 'List with one value per group, or None for no override. \n\nExample: ["Exp. 1", None, None, None]',
-                "description": "See section: PLOTTING SETTINGS, setting: Plot description, for a detailed description.",
-            },
-            {
-                "name": "override_peak_txt_dy",
-                "default": "[]",
-                "allowed": "List with one value per group, or None for no override. \n\nExample: [20, None, None, 35]",
-                "description": "This value is used to adjust the position of the peak text labels.",
-            },
-            {
-                "name": "override_visible_replicate_cols",
-                "default": "[]",
-                "allowed": "See examples above.",
-                "description": "For each group choose specific replicates to hide from the plot."
-                               "\n\nNOTE: this does NOT exclude them from the calculation of the average signal.",
             },
         ],
     },
