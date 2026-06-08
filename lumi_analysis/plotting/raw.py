@@ -191,7 +191,8 @@ def plot_raw_replicates(
 
     visible_replicate_cols = [
         col for col in all_replicate_cols
-        if col not in hidden_replicate_cols and col not in disabled_replicate_cols
+        if col not in hidden_replicate_cols
+        and col not in disabled_replicate_cols
     ]
 
     if replicate_display_mode == "mean_only":
@@ -253,6 +254,8 @@ def plot_raw_replicates(
 
     fig, ax = plt.subplots(figsize=figsize)
 
+    replicate_plot_data = {}
+
     # -------------------------------------------------------------------------
     # Plot replicates
     # -------------------------------------------------------------------------
@@ -270,21 +273,10 @@ def plot_raw_replicates(
             alpha=replicate_alpha,
         )
 
-        if plot_peaks and col in peaks_to_show:
-            color = line.get_color()
-
-            plot_peaks_for_signal(
-                ax=ax,
-                time=time,
-                signal=y,
-                color=color,
-                show_text=col in peaks_to_show_txt,
-                min_peak_distance_hours=min_peak_distance_hours,
-                prominence=peak_prominence,
-                text_dx=peak_txt_dx,
-                text_dy=peak_txt_dy,
-                text_fontsize=peak_txt_fontsize,
-            )
+        replicate_plot_data[col] = {
+            "y": y,
+            "color": line.get_color(),
+        }
 
     # -------------------------------------------------------------------------
     # Compute average
@@ -300,6 +292,7 @@ def plot_raw_replicates(
         average_label = mean_col
 
     average_y = average_signal.to_numpy(dtype=float)
+    average_line = None
 
     # -------------------------------------------------------------------------
     # Plot average
@@ -318,42 +311,6 @@ def plot_raw_replicates(
             zorder=5,
         )
 
-        # Average peak X markers
-        if show_average_peaks:
-            average_peak_color = average_line.get_color()
-
-            plot_peaks_for_signal(
-                ax=ax,
-                time=time,
-                signal=average_y,
-                color=average_peak_color,
-                show_text=False,
-                min_peak_distance_hours=min_peak_distance_hours,
-                prominence=peak_prominence,
-                text_dx=peak_txt_dx,
-                text_dy=peak_txt_dy,
-                text_fontsize=peak_txt_fontsize,
-                zorder=7,
-            )
-
-        # Average peak text labels
-        if show_average_peaks_txt:
-            average_peak_color = average_line.get_color()
-
-            plot_peaks_for_signal(
-                ax=ax,
-                time=time,
-                signal=average_y,
-                color=average_peak_color,
-                show_text=True,
-                min_peak_distance_hours=min_peak_distance_hours,
-                prominence=peak_prominence,
-                text_dx=peak_txt_dx,
-                text_dy=peak_txt_dy,
-                text_fontsize=peak_txt_fontsize,
-                zorder=8,
-            )
-
     # -------------------------------------------------------------------------
     # Figure styling
     # -------------------------------------------------------------------------
@@ -371,6 +328,55 @@ def plot_raw_replicates(
             ax.set_ylim(y_limit)
         else:
             ax.set_ylim(0, y_limit)
+
+    # -------------------------------------------------------------------------
+    # Plot peaks after final Y-axis limits are set
+    # -------------------------------------------------------------------------
+    for col in visible_replicate_cols:
+        if plot_peaks and col in peaks_to_show:
+            plot_peaks_for_signal(
+                ax=ax,
+                time=time,
+                signal=replicate_plot_data[col]["y"],
+                color=replicate_plot_data[col]["color"],
+                show_text=col in peaks_to_show_txt,
+                min_peak_distance_hours=min_peak_distance_hours,
+                prominence=peak_prominence,
+                text_dx=peak_txt_dx,
+                text_dy=peak_txt_dy,
+                text_fontsize=peak_txt_fontsize,
+            )
+
+    if replicate_display_mode != "replicates_only":
+        if show_average_peaks:
+            plot_peaks_for_signal(
+                ax=ax,
+                time=time,
+                signal=average_y,
+                color=average_line.get_color(),
+                show_text=False,
+                min_peak_distance_hours=min_peak_distance_hours,
+                prominence=peak_prominence,
+                text_dx=peak_txt_dx,
+                text_dy=peak_txt_dy,
+                text_fontsize=peak_txt_fontsize,
+                zorder=7,
+            )
+
+        if show_average_peaks_txt:
+            plot_peaks_for_signal(
+                ax=ax,
+                time=time,
+                signal=average_y,
+                color=average_line.get_color(),
+                show_text=True,
+                min_peak_distance_hours=min_peak_distance_hours,
+                prominence=peak_prominence,
+                text_dx=peak_txt_dx,
+                text_dy=peak_txt_dy,
+                text_fontsize=peak_txt_fontsize,
+                zorder=8,
+            )
 
     legend_items_count = len(visible_replicate_cols)
 

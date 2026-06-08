@@ -80,8 +80,8 @@ def plot_peaks_for_signal(
         y_min, y_max = ax.get_ylim()
         y_range = y_max - y_min
 
-        text_y = y_max - 0.04 * y_range
-        text_y = min(text_y + text_dy, y_max - 0.01 * y_range)
+        text_y = y_max - 0.08 * y_range
+        text_y = min(text_y + text_dy, y_max - 0.05 * y_range)
 
         for idx in peak_indices:
             peak_time = float(time[idx])

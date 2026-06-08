@@ -248,7 +248,7 @@ SECTIONS = [
         ],
     },
     {
-        "title": "GROUP-SPECIFIC OVERRIDES",
+        "title": "SPECIFIC Y-AXIS LIMITS",
         "settings": [
             {
                 "name": "override_group_names",
@@ -288,25 +288,6 @@ SECTIONS = [
             #     "allowed": "See examples above.",
             #     "description": "For each group choose specific replicates to hide from the plot."
             #                    "\n\nNOTE: this does NOT exclude them from the calculation of the average signal.",
-            # },
-        ],
-    },
-    {
-        "title": "PEAK/PERIOD TABLE SETTINGS",
-        "settings": [
-            {
-                "name": "save_peak_tables",
-                "default": True,
-                "allowed": "True / False",
-                "description": "•  True = create an Excel file with peaks + periods table per group."
-                               "\n•  False = do not create an Excel file for peaks + periods.",
-                "validation": ["True", "False"],
-            },
-            # {
-            #     "name": "peak_table_decimals",
-            #     "default": 2,
-            #     "allowed": "Non-negative integer. \n\nExample: 2",
-            #     "description": "Number of decimals in peak and period values.",
             # },
         ],
     },
@@ -398,6 +379,25 @@ SECTIONS = [
                 ),
                 "validation": ["True", "False"],
             },
+        ],
+    },
+    {
+        "title": "PEAK/PERIOD TABLE SETTINGS",
+        "settings": [
+            {
+                "name": "save_peak_tables",
+                "default": True,
+                "allowed": "True / False",
+                "description": "•  True = create an Excel file with peaks + periods table per group."
+                               "\n•  False = do not create an Excel file for peaks + periods.",
+                "validation": ["True", "False"],
+            },
+            # {
+            #     "name": "peak_table_decimals",
+            #     "default": 2,
+            #     "allowed": "Non-negative integer. \n\nExample: 2",
+            #     "description": "Number of decimals in peak and period values.",
+            # },
         ],
     },
 ]
