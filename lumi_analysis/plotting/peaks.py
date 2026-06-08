@@ -78,14 +78,17 @@ def plot_peaks_for_signal(
 
     if show_text:
         y_min, y_max = ax.get_ylim()
-        text_y = y_max - 0.04 * (y_max - y_min)
+        y_range = y_max - y_min
+
+        text_y = y_max - 0.04 * y_range
+        text_y = min(text_y + text_dy, y_max - 0.01 * y_range)
 
         for idx in peak_indices:
             peak_time = float(time[idx])
 
             ax.text(
                 peak_time + text_dx,
-                text_y + text_dy,
+                text_y,
                 f"{peak_time:.1f}",
                 fontsize=text_fontsize,
                 alpha=0.85,
@@ -94,6 +97,7 @@ def plot_peaks_for_signal(
                 zorder=zorder + 1,
                 ha="left",
                 va="top",
+                clip_on=True,
             )
 
     return peak_indices
