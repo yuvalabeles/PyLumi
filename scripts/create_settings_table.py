@@ -408,6 +408,7 @@ def create_settings_template(output_path=OUTPUT_FILE):
 
     workbook = xlsxwriter.Workbook(output_path)
     worksheet = workbook.add_worksheet("Settings")
+    worksheet.set_zoom(75)
 
     title_format = workbook.add_format({
         "bold": True,
@@ -621,6 +622,8 @@ def create_settings_template(output_path=OUTPUT_FILE):
         "delete_columns": False,
         "delete_rows": False,
     })
+
+    worksheet.set_top_left_cell(0, 0)
 
     workbook.close()
     print(f"Created: {output_path.resolve()}")
