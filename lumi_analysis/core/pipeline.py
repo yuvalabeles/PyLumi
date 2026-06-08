@@ -110,9 +110,6 @@ def plot_pipeline_results(config, analysis_result):
 
             min_peak_distance_hours=get_group_plot_setting(config, group_name, "min_peak_distance_hours", 20),
             peak_prominence=get_group_plot_setting(config, group_name, "peak_prominence", None),
-            peak_marker=get_group_plot_setting(config, group_name, "peak_marker", "x"),
-            peak_markersize=get_group_plot_setting(config, group_name, "peak_markersize", 7),
-            peak_markeredgewidth=get_group_plot_setting(config, group_name, "peak_markeredgewidth", 1.5),
             peak_txt_dx=get_group_plot_setting(config, group_name, "peak_txt_dx", 2),
             peak_txt_dy=get_group_plot_setting(config, group_name, "peak_txt_dy", 0),
             peak_txt_fontsize=get_group_plot_setting(config, group_name, "peak_txt_fontsize", 8),

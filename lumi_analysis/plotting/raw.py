@@ -147,9 +147,6 @@ def plot_raw_replicates(
     show_average_peaks_txt=True,
     min_peak_distance_hours=20,
     peak_prominence=None,
-    peak_marker="x",
-    peak_markersize=7,
-    peak_markeredgewidth=1.5,
     peak_txt_dx=2,
     peak_txt_dy=0,
     peak_txt_fontsize=8,
@@ -177,7 +174,10 @@ def plot_raw_replicates(
 
     all_replicate_cols = get_lumi_replicate_columns(df, mean_col=mean_col)
 
-    disabled_replicate_cols = mean_replicate_cols or []
+    disabled_replicate_cols = [
+        col for col in (mean_replicate_cols or [])
+        if col in all_replicate_cols
+    ]
 
     if mean_replicate_cols is None:
         mean_replicate_cols = all_replicate_cols
@@ -281,9 +281,6 @@ def plot_raw_replicates(
                 show_text=col in peaks_to_show_txt,
                 min_peak_distance_hours=min_peak_distance_hours,
                 prominence=peak_prominence,
-                # marker=peak_marker,
-                # markersize=peak_markersize,
-                # markeredgewidth=peak_markeredgewidth,
                 text_dx=peak_txt_dx,
                 text_dy=peak_txt_dy,
                 text_fontsize=peak_txt_fontsize,
@@ -333,9 +330,6 @@ def plot_raw_replicates(
                 show_text=False,
                 min_peak_distance_hours=min_peak_distance_hours,
                 prominence=peak_prominence,
-                # marker=peak_marker,
-                # markersize=peak_markersize,
-                # markeredgewidth=peak_markeredgewidth,
                 text_dx=peak_txt_dx,
                 text_dy=peak_txt_dy,
                 text_fontsize=peak_txt_fontsize,
@@ -354,9 +348,6 @@ def plot_raw_replicates(
                 show_text=True,
                 min_peak_distance_hours=min_peak_distance_hours,
                 prominence=peak_prominence,
-                # marker="",
-                # markersize=0,
-                # markeredgewidth=0,
                 text_dx=peak_txt_dx,
                 text_dy=peak_txt_dy,
                 text_fontsize=peak_txt_fontsize,
